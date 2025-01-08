@@ -17,7 +17,7 @@ require-tools: tools
 tools:
 	@echo 'Installing tools...'
 	@rm -rf toolbin
-	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.47.0
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.63.4
 	@go install golang.org/x/tools/cmd/goimports@v0.1.11
 
 	@go install github.com/golang/mock/mockgen@5b455625bd2c8ffbcc0de6a0873f864ba3820904
