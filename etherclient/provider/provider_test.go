@@ -3,7 +3,7 @@ package provider_test
 import (
 	"testing"
 
-	"github.com/forta-network/core-go/ethclient/provider"
+	"github.com/forta-network/core-go/etherclient/provider"
 	"github.com/stretchr/testify/require"
 )
 
