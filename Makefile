@@ -50,15 +50,3 @@ coverage-func:
 .PHONY: coverage-html
 coverage-html:
 	go tool cover -html=coverage.out -o=coverage.html
-
-.PHONY: pull-contracts
-pull-contracts:
-	./scripts/pull-contracts.sh forta-contracts 59ae488
-
-.PHONY: swagger
-swagger: require-tools
-	@rm -rf clients/webhook/swagger
-	@$(SWAGGER) generate client \
-		-f protocol/webhook/swagger.yml \
-		-c clients/webhook/client \
-		-m clients/webhook/client/models
