@@ -33,7 +33,7 @@ lint: require-tools fmt
 
 .PHONY: mocks
 mocks:
-	$(MOCKGEN) -source etherclient/client.go -destination ethereum/mocks/mock_client.go
+	$(MOCKGEN) -source etherclient/client.go -destination etherclient/mocks/mock_client.go
 	$(MOCKGEN) -source aws/sns.go -destination aws/mocks/mock_sns.go
 	$(MOCKGEN) -source aws/sqs.go -destination aws/mocks/mock_sqs.go
 	$(MOCKGEN) -source aws/s3.go -destination aws/mocks/mock_s3.go
