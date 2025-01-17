@@ -114,6 +114,21 @@ func (mr *MockEthClientMockRecorder) CodeAt(ctx, account, blockNumber interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CodeAt", reflect.TypeOf((*MockEthClient)(nil).CodeAt), ctx, account, blockNumber)
 }
 
+// EstimateGas mocks base method.
+func (m *MockEthClient) EstimateGas(ctx context.Context, call ethereum.CallMsg) (uint64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EstimateGas", ctx, call)
+	ret0, _ := ret[0].(uint64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// EstimateGas indicates an expected call of EstimateGas.
+func (mr *MockEthClientMockRecorder) EstimateGas(ctx, call interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EstimateGas", reflect.TypeOf((*MockEthClient)(nil).EstimateGas), ctx, call)
+}
+
 // FilterLogs mocks base method.
 func (m *MockEthClient) FilterLogs(ctx context.Context, q ethereum.FilterQuery) ([]types.Log, error) {
 	m.ctrl.T.Helper()
@@ -217,6 +232,36 @@ func (m *MockEthClient) SubscribeNewHead(ctx context.Context, ch chan<- *types.H
 func (mr *MockEthClientMockRecorder) SubscribeNewHead(ctx, ch interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubscribeNewHead", reflect.TypeOf((*MockEthClient)(nil).SubscribeNewHead), ctx, ch)
+}
+
+// SuggestGasPrice mocks base method.
+func (m *MockEthClient) SuggestGasPrice(ctx context.Context) (*big.Int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SuggestGasPrice", ctx)
+	ret0, _ := ret[0].(*big.Int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SuggestGasPrice indicates an expected call of SuggestGasPrice.
+func (mr *MockEthClientMockRecorder) SuggestGasPrice(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SuggestGasPrice", reflect.TypeOf((*MockEthClient)(nil).SuggestGasPrice), ctx)
+}
+
+// SuggestGasTipCap mocks base method.
+func (m *MockEthClient) SuggestGasTipCap(ctx context.Context) (*big.Int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SuggestGasTipCap", ctx)
+	ret0, _ := ret[0].(*big.Int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SuggestGasTipCap indicates an expected call of SuggestGasTipCap.
+func (mr *MockEthClientMockRecorder) SuggestGasTipCap(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SuggestGasTipCap", reflect.TypeOf((*MockEthClient)(nil).SuggestGasTipCap), ctx)
 }
 
 // TransactionByHash mocks base method.
@@ -392,6 +437,21 @@ func (mr *MockEtherClientMockRecorder) DebugTraceCall(ctx, req, block, traceCall
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugTraceCall", reflect.TypeOf((*MockEtherClient)(nil).DebugTraceCall), ctx, req, block, traceCallConfig, result)
 }
 
+// EstimateGas mocks base method.
+func (m *MockEtherClient) EstimateGas(ctx context.Context, call ethereum.CallMsg) (uint64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EstimateGas", ctx, call)
+	ret0, _ := ret[0].(uint64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// EstimateGas indicates an expected call of EstimateGas.
+func (mr *MockEtherClientMockRecorder) EstimateGas(ctx, call interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EstimateGas", reflect.TypeOf((*MockEtherClient)(nil).EstimateGas), ctx, call)
+}
+
 // FilterLogs mocks base method.
 func (m *MockEtherClient) FilterLogs(ctx context.Context, q ethereum.FilterQuery) ([]types.Log, error) {
 	m.ctrl.T.Helper()
@@ -495,6 +555,36 @@ func (m *MockEtherClient) SubscribeNewHead(ctx context.Context, ch chan<- *types
 func (mr *MockEtherClientMockRecorder) SubscribeNewHead(ctx, ch interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubscribeNewHead", reflect.TypeOf((*MockEtherClient)(nil).SubscribeNewHead), ctx, ch)
+}
+
+// SuggestGasPrice mocks base method.
+func (m *MockEtherClient) SuggestGasPrice(ctx context.Context) (*big.Int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SuggestGasPrice", ctx)
+	ret0, _ := ret[0].(*big.Int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SuggestGasPrice indicates an expected call of SuggestGasPrice.
+func (mr *MockEtherClientMockRecorder) SuggestGasPrice(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SuggestGasPrice", reflect.TypeOf((*MockEtherClient)(nil).SuggestGasPrice), ctx)
+}
+
+// SuggestGasTipCap mocks base method.
+func (m *MockEtherClient) SuggestGasTipCap(ctx context.Context) (*big.Int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SuggestGasTipCap", ctx)
+	ret0, _ := ret[0].(*big.Int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SuggestGasTipCap indicates an expected call of SuggestGasTipCap.
+func (mr *MockEtherClientMockRecorder) SuggestGasTipCap(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SuggestGasTipCap", reflect.TypeOf((*MockEtherClient)(nil).SuggestGasTipCap), ctx)
 }
 
 // TransactionByHash mocks base method.

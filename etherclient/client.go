@@ -32,6 +32,9 @@ type EthClient interface {
 	ethereum.TransactionReader
 	ethereum.LogFilterer
 	ethereum.ContractCaller
+	ethereum.GasEstimator
+	ethereum.GasPricer
+	ethereum.GasPricer1559
 }
 
 // EtherClient is the extended interface implemented implemented by this package.
