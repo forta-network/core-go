@@ -84,6 +84,21 @@ func (mr *MockEthClientMockRecorder) BlockByNumber(ctx, number interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BlockByNumber", reflect.TypeOf((*MockEthClient)(nil).BlockByNumber), ctx, number)
 }
 
+// BlockNumber mocks base method.
+func (m *MockEthClient) BlockNumber(ctx context.Context) (uint64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BlockNumber", ctx)
+	ret0, _ := ret[0].(uint64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BlockNumber indicates an expected call of BlockNumber.
+func (mr *MockEthClientMockRecorder) BlockNumber(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BlockNumber", reflect.TypeOf((*MockEthClient)(nil).BlockNumber), ctx)
+}
+
 // CallContract mocks base method.
 func (m *MockEthClient) CallContract(ctx context.Context, call ethereum.CallMsg, blockNumber *big.Int) ([]byte, error) {
 	m.ctrl.T.Helper()
@@ -97,6 +112,21 @@ func (m *MockEthClient) CallContract(ctx context.Context, call ethereum.CallMsg,
 func (mr *MockEthClientMockRecorder) CallContract(ctx, call, blockNumber interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CallContract", reflect.TypeOf((*MockEthClient)(nil).CallContract), ctx, call, blockNumber)
+}
+
+// ChainID mocks base method.
+func (m *MockEthClient) ChainID(ctx context.Context) (*big.Int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ChainID", ctx)
+	ret0, _ := ret[0].(*big.Int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ChainID indicates an expected call of ChainID.
+func (mr *MockEthClientMockRecorder) ChainID(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ChainID", reflect.TypeOf((*MockEthClient)(nil).ChainID), ctx)
 }
 
 // CodeAt mocks base method.
@@ -127,6 +157,21 @@ func (m *MockEthClient) EstimateGas(ctx context.Context, call ethereum.CallMsg) 
 func (mr *MockEthClientMockRecorder) EstimateGas(ctx, call interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EstimateGas", reflect.TypeOf((*MockEthClient)(nil).EstimateGas), ctx, call)
+}
+
+// FeeHistory mocks base method.
+func (m *MockEthClient) FeeHistory(ctx context.Context, blockCount uint64, lastBlock *big.Int, rewardPercentiles []float64) (*ethereum.FeeHistory, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FeeHistory", ctx, blockCount, lastBlock, rewardPercentiles)
+	ret0, _ := ret[0].(*ethereum.FeeHistory)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FeeHistory indicates an expected call of FeeHistory.
+func (mr *MockEthClientMockRecorder) FeeHistory(ctx, blockCount, lastBlock, rewardPercentiles interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FeeHistory", reflect.TypeOf((*MockEthClient)(nil).FeeHistory), ctx, blockCount, lastBlock, rewardPercentiles)
 }
 
 // FilterLogs mocks base method.
@@ -187,6 +232,110 @@ func (m *MockEthClient) NonceAt(ctx context.Context, account common.Address, blo
 func (mr *MockEthClientMockRecorder) NonceAt(ctx, account, blockNumber interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NonceAt", reflect.TypeOf((*MockEthClient)(nil).NonceAt), ctx, account, blockNumber)
+}
+
+// PendingBalanceAt mocks base method.
+func (m *MockEthClient) PendingBalanceAt(ctx context.Context, account common.Address) (*big.Int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PendingBalanceAt", ctx, account)
+	ret0, _ := ret[0].(*big.Int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PendingBalanceAt indicates an expected call of PendingBalanceAt.
+func (mr *MockEthClientMockRecorder) PendingBalanceAt(ctx, account interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PendingBalanceAt", reflect.TypeOf((*MockEthClient)(nil).PendingBalanceAt), ctx, account)
+}
+
+// PendingCallContract mocks base method.
+func (m *MockEthClient) PendingCallContract(ctx context.Context, call ethereum.CallMsg) ([]byte, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PendingCallContract", ctx, call)
+	ret0, _ := ret[0].([]byte)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PendingCallContract indicates an expected call of PendingCallContract.
+func (mr *MockEthClientMockRecorder) PendingCallContract(ctx, call interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PendingCallContract", reflect.TypeOf((*MockEthClient)(nil).PendingCallContract), ctx, call)
+}
+
+// PendingCodeAt mocks base method.
+func (m *MockEthClient) PendingCodeAt(ctx context.Context, account common.Address) ([]byte, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PendingCodeAt", ctx, account)
+	ret0, _ := ret[0].([]byte)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PendingCodeAt indicates an expected call of PendingCodeAt.
+func (mr *MockEthClientMockRecorder) PendingCodeAt(ctx, account interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PendingCodeAt", reflect.TypeOf((*MockEthClient)(nil).PendingCodeAt), ctx, account)
+}
+
+// PendingNonceAt mocks base method.
+func (m *MockEthClient) PendingNonceAt(ctx context.Context, account common.Address) (uint64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PendingNonceAt", ctx, account)
+	ret0, _ := ret[0].(uint64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PendingNonceAt indicates an expected call of PendingNonceAt.
+func (mr *MockEthClientMockRecorder) PendingNonceAt(ctx, account interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PendingNonceAt", reflect.TypeOf((*MockEthClient)(nil).PendingNonceAt), ctx, account)
+}
+
+// PendingStorageAt mocks base method.
+func (m *MockEthClient) PendingStorageAt(ctx context.Context, account common.Address, key common.Hash) ([]byte, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PendingStorageAt", ctx, account, key)
+	ret0, _ := ret[0].([]byte)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PendingStorageAt indicates an expected call of PendingStorageAt.
+func (mr *MockEthClientMockRecorder) PendingStorageAt(ctx, account, key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PendingStorageAt", reflect.TypeOf((*MockEthClient)(nil).PendingStorageAt), ctx, account, key)
+}
+
+// PendingTransactionCount mocks base method.
+func (m *MockEthClient) PendingTransactionCount(ctx context.Context) (uint, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PendingTransactionCount", ctx)
+	ret0, _ := ret[0].(uint)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PendingTransactionCount indicates an expected call of PendingTransactionCount.
+func (mr *MockEthClientMockRecorder) PendingTransactionCount(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PendingTransactionCount", reflect.TypeOf((*MockEthClient)(nil).PendingTransactionCount), ctx)
+}
+
+// SendTransaction mocks base method.
+func (m *MockEthClient) SendTransaction(ctx context.Context, tx *types.Transaction) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendTransaction", ctx, tx)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendTransaction indicates an expected call of SendTransaction.
+func (mr *MockEthClientMockRecorder) SendTransaction(ctx, tx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendTransaction", reflect.TypeOf((*MockEthClient)(nil).SendTransaction), ctx, tx)
 }
 
 // StorageAt mocks base method.
@@ -262,6 +411,21 @@ func (m *MockEthClient) SuggestGasTipCap(ctx context.Context) (*big.Int, error) 
 func (mr *MockEthClientMockRecorder) SuggestGasTipCap(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SuggestGasTipCap", reflect.TypeOf((*MockEthClient)(nil).SuggestGasTipCap), ctx)
+}
+
+// SyncProgress mocks base method.
+func (m *MockEthClient) SyncProgress(ctx context.Context) (*ethereum.SyncProgress, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SyncProgress", ctx)
+	ret0, _ := ret[0].(*ethereum.SyncProgress)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SyncProgress indicates an expected call of SyncProgress.
+func (mr *MockEthClientMockRecorder) SyncProgress(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SyncProgress", reflect.TypeOf((*MockEthClient)(nil).SyncProgress), ctx)
 }
 
 // TransactionByHash mocks base method.
@@ -393,6 +557,21 @@ func (mr *MockEtherClientMockRecorder) BlockByNumber(ctx, number interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BlockByNumber", reflect.TypeOf((*MockEtherClient)(nil).BlockByNumber), ctx, number)
 }
 
+// BlockNumber mocks base method.
+func (m *MockEtherClient) BlockNumber(ctx context.Context) (uint64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BlockNumber", ctx)
+	ret0, _ := ret[0].(uint64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BlockNumber indicates an expected call of BlockNumber.
+func (mr *MockEtherClientMockRecorder) BlockNumber(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BlockNumber", reflect.TypeOf((*MockEtherClient)(nil).BlockNumber), ctx)
+}
+
 // CallContract mocks base method.
 func (m *MockEtherClient) CallContract(ctx context.Context, call ethereum.CallMsg, blockNumber *big.Int) ([]byte, error) {
 	m.ctrl.T.Helper()
@@ -406,6 +585,21 @@ func (m *MockEtherClient) CallContract(ctx context.Context, call ethereum.CallMs
 func (mr *MockEtherClientMockRecorder) CallContract(ctx, call, blockNumber interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CallContract", reflect.TypeOf((*MockEtherClient)(nil).CallContract), ctx, call, blockNumber)
+}
+
+// ChainID mocks base method.
+func (m *MockEtherClient) ChainID(ctx context.Context) (*big.Int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ChainID", ctx)
+	ret0, _ := ret[0].(*big.Int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ChainID indicates an expected call of ChainID.
+func (mr *MockEtherClientMockRecorder) ChainID(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ChainID", reflect.TypeOf((*MockEtherClient)(nil).ChainID), ctx)
 }
 
 // CodeAt mocks base method.
@@ -450,6 +644,21 @@ func (m *MockEtherClient) EstimateGas(ctx context.Context, call ethereum.CallMsg
 func (mr *MockEtherClientMockRecorder) EstimateGas(ctx, call interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EstimateGas", reflect.TypeOf((*MockEtherClient)(nil).EstimateGas), ctx, call)
+}
+
+// FeeHistory mocks base method.
+func (m *MockEtherClient) FeeHistory(ctx context.Context, blockCount uint64, lastBlock *big.Int, rewardPercentiles []float64) (*ethereum.FeeHistory, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FeeHistory", ctx, blockCount, lastBlock, rewardPercentiles)
+	ret0, _ := ret[0].(*ethereum.FeeHistory)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FeeHistory indicates an expected call of FeeHistory.
+func (mr *MockEtherClientMockRecorder) FeeHistory(ctx, blockCount, lastBlock, rewardPercentiles interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FeeHistory", reflect.TypeOf((*MockEtherClient)(nil).FeeHistory), ctx, blockCount, lastBlock, rewardPercentiles)
 }
 
 // FilterLogs mocks base method.
@@ -510,6 +719,110 @@ func (m *MockEtherClient) NonceAt(ctx context.Context, account common.Address, b
 func (mr *MockEtherClientMockRecorder) NonceAt(ctx, account, blockNumber interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NonceAt", reflect.TypeOf((*MockEtherClient)(nil).NonceAt), ctx, account, blockNumber)
+}
+
+// PendingBalanceAt mocks base method.
+func (m *MockEtherClient) PendingBalanceAt(ctx context.Context, account common.Address) (*big.Int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PendingBalanceAt", ctx, account)
+	ret0, _ := ret[0].(*big.Int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PendingBalanceAt indicates an expected call of PendingBalanceAt.
+func (mr *MockEtherClientMockRecorder) PendingBalanceAt(ctx, account interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PendingBalanceAt", reflect.TypeOf((*MockEtherClient)(nil).PendingBalanceAt), ctx, account)
+}
+
+// PendingCallContract mocks base method.
+func (m *MockEtherClient) PendingCallContract(ctx context.Context, call ethereum.CallMsg) ([]byte, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PendingCallContract", ctx, call)
+	ret0, _ := ret[0].([]byte)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PendingCallContract indicates an expected call of PendingCallContract.
+func (mr *MockEtherClientMockRecorder) PendingCallContract(ctx, call interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PendingCallContract", reflect.TypeOf((*MockEtherClient)(nil).PendingCallContract), ctx, call)
+}
+
+// PendingCodeAt mocks base method.
+func (m *MockEtherClient) PendingCodeAt(ctx context.Context, account common.Address) ([]byte, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PendingCodeAt", ctx, account)
+	ret0, _ := ret[0].([]byte)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PendingCodeAt indicates an expected call of PendingCodeAt.
+func (mr *MockEtherClientMockRecorder) PendingCodeAt(ctx, account interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PendingCodeAt", reflect.TypeOf((*MockEtherClient)(nil).PendingCodeAt), ctx, account)
+}
+
+// PendingNonceAt mocks base method.
+func (m *MockEtherClient) PendingNonceAt(ctx context.Context, account common.Address) (uint64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PendingNonceAt", ctx, account)
+	ret0, _ := ret[0].(uint64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PendingNonceAt indicates an expected call of PendingNonceAt.
+func (mr *MockEtherClientMockRecorder) PendingNonceAt(ctx, account interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PendingNonceAt", reflect.TypeOf((*MockEtherClient)(nil).PendingNonceAt), ctx, account)
+}
+
+// PendingStorageAt mocks base method.
+func (m *MockEtherClient) PendingStorageAt(ctx context.Context, account common.Address, key common.Hash) ([]byte, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PendingStorageAt", ctx, account, key)
+	ret0, _ := ret[0].([]byte)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PendingStorageAt indicates an expected call of PendingStorageAt.
+func (mr *MockEtherClientMockRecorder) PendingStorageAt(ctx, account, key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PendingStorageAt", reflect.TypeOf((*MockEtherClient)(nil).PendingStorageAt), ctx, account, key)
+}
+
+// PendingTransactionCount mocks base method.
+func (m *MockEtherClient) PendingTransactionCount(ctx context.Context) (uint, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PendingTransactionCount", ctx)
+	ret0, _ := ret[0].(uint)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PendingTransactionCount indicates an expected call of PendingTransactionCount.
+func (mr *MockEtherClientMockRecorder) PendingTransactionCount(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PendingTransactionCount", reflect.TypeOf((*MockEtherClient)(nil).PendingTransactionCount), ctx)
+}
+
+// SendTransaction mocks base method.
+func (m *MockEtherClient) SendTransaction(ctx context.Context, tx *types.Transaction) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendTransaction", ctx, tx)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SendTransaction indicates an expected call of SendTransaction.
+func (mr *MockEtherClientMockRecorder) SendTransaction(ctx, tx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendTransaction", reflect.TypeOf((*MockEtherClient)(nil).SendTransaction), ctx, tx)
 }
 
 // StorageAt mocks base method.
@@ -585,6 +898,21 @@ func (m *MockEtherClient) SuggestGasTipCap(ctx context.Context) (*big.Int, error
 func (mr *MockEtherClientMockRecorder) SuggestGasTipCap(ctx interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SuggestGasTipCap", reflect.TypeOf((*MockEtherClient)(nil).SuggestGasTipCap), ctx)
+}
+
+// SyncProgress mocks base method.
+func (m *MockEtherClient) SyncProgress(ctx context.Context) (*ethereum.SyncProgress, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SyncProgress", ctx)
+	ret0, _ := ret[0].(*ethereum.SyncProgress)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SyncProgress indicates an expected call of SyncProgress.
+func (mr *MockEtherClientMockRecorder) SyncProgress(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SyncProgress", reflect.TypeOf((*MockEtherClient)(nil).SyncProgress), ctx)
 }
 
 // TransactionByHash mocks base method.
