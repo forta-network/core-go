@@ -261,6 +261,21 @@ func (mr *MockStoreMockRecorder[I]) Put(ctx, item interface{}, conditionExpressi
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Put", reflect.TypeOf((*MockStore[I])(nil).Put), varargs...)
 }
 
+// Scan mocks base method.
+func (m *MockStore[I]) Scan(ctx context.Context) ([]*I, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Scan", ctx)
+	ret0, _ := ret[0].([]*I)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Scan indicates an expected call of Scan.
+func (mr *MockStoreMockRecorder[I]) Scan(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Scan", reflect.TypeOf((*MockStore[I])(nil).Scan), ctx)
+}
+
 // TableName mocks base method.
 func (m *MockStore[I]) TableName() string {
 	m.ctrl.T.Helper()
