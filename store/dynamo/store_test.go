@@ -106,6 +106,24 @@ func (pkm *primaryKeyMatcher) String() string {
 	return string(b)
 }
 
+func TestScan(t *testing.T) {
+	r := require.New(t)
+
+	client := mock_aws.NewMockDynamoDBClient(gomock.NewController(t))
+	store := dynamo.NewStore[testItem](client, testTableName)
+
+	client.EXPECT().Scan(gomock.Any(), gomock.Any()).
+		Return(&dynamodb.ScanOutput{
+			Items: []map[string]types.AttributeValue{testFoundItem},
+		}, nil)
+
+	items, err := store.Scan(context.Background())
+
+	r.NoError(err)
+	r.Equal(testPartitionKeyVal, items[0].Pkey)
+	r.Equal(testSortKeyVal, items[0].Skey)
+}
+
 func TestGet(t *testing.T) {
 	testCases := []struct {
 		name             string

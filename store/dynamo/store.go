@@ -43,6 +43,7 @@ type Store[I Item] interface {
 	TableName() string
 	WithCache(cache Cache[I]) Store[I]
 
+	Scan(ctx context.Context) ([]*I, error)
 	Get(ctx context.Context, partitionKey string, sortKey ...string) (*I, error)
 	GetAll(ctx context.Context, partitionKey string) ([]*I, error)
 	GetAllFromIndex(ctx context.Context, indexName, partitionKeyName, partitionKeyVal string) ([]*I, error)
@@ -75,6 +76,25 @@ func (s *store[I]) TableName() string {
 
 func (s *store[I]) WithCache(cache Cache[I]) Store[I] {
 	return &cachedStore[I]{cache: cache, Store: s}
+}
+
+func (s *store[I]) Scan(ctx context.Context) ([]*I, error) {
+	res, err := s.client.Scan(ctx, &dynamodb.ScanInput{
+		TableName: &s.tableName,
+		Select:    types.SelectAllAttributes,
+	})
+	if err != nil {
+		return nil, err
+	}
+	var items []*I
+	for _, resIt := range res.Items {
+		var item I
+		if err := attributevalue.UnmarshalMap(resIt, &item); err != nil {
+			return nil, err
+		}
+		items = append(items, &item)
+	}
+	return items, nil
 }
 
 func (s *store[I]) Get(ctx context.Context, partitionKey string, sortKey ...string) (*I, error) {

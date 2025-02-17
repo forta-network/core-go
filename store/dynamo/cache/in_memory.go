@@ -29,7 +29,7 @@ func (cache *inMemory[I]) Get(ctx context.Context, partitionKey string, sortKey 
 }
 
 func (cache *inMemory[I]) Put(ctx context.Context, item *I, partitionKey string, sortKey ...string) {
-	cache.cache.Add(makeCacheKey(partitionKey, sortKey...), item, 0)
+	_ = cache.cache.Add(makeCacheKey(partitionKey, sortKey...), item, 0)
 }
 
 func (cache *inMemory[I]) GetQuery(ctx context.Context, queryKey string) ([]*I, bool) {
@@ -41,5 +41,5 @@ func (cache *inMemory[I]) GetQuery(ctx context.Context, queryKey string) ([]*I, 
 }
 
 func (cache *inMemory[I]) PutQuery(ctx context.Context, queryKey string, items []*I) {
-	cache.cache.Add(queryKey, items, 0)
+	_ = cache.cache.Add(queryKey, items, 0)
 }
