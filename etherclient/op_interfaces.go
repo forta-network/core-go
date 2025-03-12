@@ -4,10 +4,10 @@ import (
 	"context"
 	"math/big"
 
-	ethereum "op-geth"
-	"op-geth/common"
-	"op-geth/core/types"
-	"op-geth/rpc"
+	ethereum "github.com/forta-network/op-geth"
+	"github.com/forta-network/op-geth/common"
+	"github.com/forta-network/op-geth/core/types"
+	"github.com/forta-network/op-geth/rpc"
 )
 
 // OpEthClient is the original interface from go-ethereum.

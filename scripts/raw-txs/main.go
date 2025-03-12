@@ -19,7 +19,7 @@ var env Env
 func main() {
 	envconfig.MustProcess("", &env)
 
-	ethClient, err := etherclient.DialContext(context.Background(), env.JSONRPCURL)
+	ethClient, err := etherclient.DialContextOp(context.Background(), env.JSONRPCURL)
 	utils.FatalIfError(err)
 
 	blockNum, err := ethClient.BlockNumber(context.Background())

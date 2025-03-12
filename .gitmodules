@@ -1,3 +1,0 @@
-[submodule "external/op-geth"]
-	path = external/op-geth
-	url = https://github.com/ethereum-optimism/op-geth.git

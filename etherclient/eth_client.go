@@ -19,7 +19,7 @@ type etherClient struct {
 
 var _ EtherClient = &etherClient{}
 
-// NewRetrierClient dials all given URLs and creates a client that works with multiple clients
+// DialContext dials all given URLs and creates a client that works with multiple clients
 // and a backoff logic.
 func DialContext(ctx context.Context, rawurls ...string) (*etherClient, error) {
 	var clients []EthClient
