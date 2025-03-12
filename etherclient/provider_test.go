@@ -1,9 +1,9 @@
-package provider_test
+package etherclient_test
 
 import (
 	"testing"
 
-	"github.com/forta-network/core-go/etherclient/provider"
+	"github.com/forta-network/core-go/etherclient"
 	"github.com/stretchr/testify/require"
 )
 
@@ -21,7 +21,7 @@ func TestRingProvider(t *testing.T) {
 	el1 := &testElement{}
 	el2 := &testElement{}
 
-	p := provider.NewRingProvider(el1, el2)
+	p := etherclient.NewRingProvider(el1, el2)
 	r.Equal(el1, p.Provide())
 	r.Equal(el1, p.Provide())
 	r.Equal(el2, p.Next())

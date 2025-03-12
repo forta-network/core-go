@@ -1,4 +1,4 @@
-package provider
+package etherclient
 
 import (
 	"github.com/forta-network/core-go/utils/slicering"
