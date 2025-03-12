@@ -676,6 +676,21 @@ func (mr *MockEtherClientMockRecorder) FilterLogs(ctx, q interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FilterLogs", reflect.TypeOf((*MockEtherClient)(nil).FilterLogs), ctx, q)
 }
 
+// GetBlockRawTransactions mocks base method.
+func (m *MockEtherClient) GetBlockRawTransactions(ctx context.Context, number *big.Int) ([]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetBlockRawTransactions", ctx, number)
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetBlockRawTransactions indicates an expected call of GetBlockRawTransactions.
+func (mr *MockEtherClientMockRecorder) GetBlockRawTransactions(ctx, number interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBlockRawTransactions", reflect.TypeOf((*MockEtherClient)(nil).GetBlockRawTransactions), ctx, number)
+}
+
 // HeaderByHash mocks base method.
 func (m *MockEtherClient) HeaderByHash(ctx context.Context, hash common.Hash) (*types.Header, error) {
 	m.ctrl.T.Helper()
@@ -974,4 +989,56 @@ func (m *MockEtherClient) TransactionReceipt(ctx context.Context, txHash common.
 func (mr *MockEtherClientMockRecorder) TransactionReceipt(ctx, txHash interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TransactionReceipt", reflect.TypeOf((*MockEtherClient)(nil).TransactionReceipt), ctx, txHash)
+}
+
+// MockExtras is a mock of Extras interface.
+type MockExtras struct {
+	ctrl     *gomock.Controller
+	recorder *MockExtrasMockRecorder
+}
+
+// MockExtrasMockRecorder is the mock recorder for MockExtras.
+type MockExtrasMockRecorder struct {
+	mock *MockExtras
+}
+
+// NewMockExtras creates a new mock instance.
+func NewMockExtras(ctrl *gomock.Controller) *MockExtras {
+	mock := &MockExtras{ctrl: ctrl}
+	mock.recorder = &MockExtrasMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockExtras) EXPECT() *MockExtrasMockRecorder {
+	return m.recorder
+}
+
+// DebugTraceCall mocks base method.
+func (m *MockExtras) DebugTraceCall(ctx context.Context, req *etherclient.TraceCallTransaction, block any, traceCallConfig etherclient.TraceCallConfig, result interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DebugTraceCall", ctx, req, block, traceCallConfig, result)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DebugTraceCall indicates an expected call of DebugTraceCall.
+func (mr *MockExtrasMockRecorder) DebugTraceCall(ctx, req, block, traceCallConfig, result interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugTraceCall", reflect.TypeOf((*MockExtras)(nil).DebugTraceCall), ctx, req, block, traceCallConfig, result)
+}
+
+// GetBlockRawTransactions mocks base method.
+func (m *MockExtras) GetBlockRawTransactions(ctx context.Context, number *big.Int) ([]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetBlockRawTransactions", ctx, number)
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetBlockRawTransactions indicates an expected call of GetBlockRawTransactions.
+func (mr *MockExtrasMockRecorder) GetBlockRawTransactions(ctx, number interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBlockRawTransactions", reflect.TypeOf((*MockExtras)(nil).GetBlockRawTransactions), ctx, number)
 }
