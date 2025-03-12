@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	backoffInitialInterval = time.Second
+	backoffInitialInterval = time.Second * 2
 	backoffMaxInterval     = time.Minute
 	backoffMaxElapsedTime  = time.Minute * 5
 	backoffContextTimeout  = time.Minute
@@ -54,7 +54,7 @@ type Extras interface {
 		block any, traceCallConfig TraceCallConfig,
 		result interface{},
 	) error
-	GetBlockRawTransactions(ctx context.Context, number *big.Int) ([]string, error)
+	GetBlockTransactions(ctx context.Context, number *big.Int) ([]*BlockTx, error)
 }
 
 // etherClient is a wrapper of go-ethereum ethclient.Client which uses multiple fallback

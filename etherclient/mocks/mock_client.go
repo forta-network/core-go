@@ -676,19 +676,19 @@ func (mr *MockEtherClientMockRecorder) FilterLogs(ctx, q interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FilterLogs", reflect.TypeOf((*MockEtherClient)(nil).FilterLogs), ctx, q)
 }
 
-// GetBlockRawTransactions mocks base method.
-func (m *MockEtherClient) GetBlockRawTransactions(ctx context.Context, number *big.Int) ([]string, error) {
+// GetBlockTransactions mocks base method.
+func (m *MockEtherClient) GetBlockTransactions(ctx context.Context, number *big.Int) ([]*etherclient.BlockTx, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetBlockRawTransactions", ctx, number)
-	ret0, _ := ret[0].([]string)
+	ret := m.ctrl.Call(m, "GetBlockTransactions", ctx, number)
+	ret0, _ := ret[0].([]*etherclient.BlockTx)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetBlockRawTransactions indicates an expected call of GetBlockRawTransactions.
-func (mr *MockEtherClientMockRecorder) GetBlockRawTransactions(ctx, number interface{}) *gomock.Call {
+// GetBlockTransactions indicates an expected call of GetBlockTransactions.
+func (mr *MockEtherClientMockRecorder) GetBlockTransactions(ctx, number interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBlockRawTransactions", reflect.TypeOf((*MockEtherClient)(nil).GetBlockRawTransactions), ctx, number)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBlockTransactions", reflect.TypeOf((*MockEtherClient)(nil).GetBlockTransactions), ctx, number)
 }
 
 // HeaderByHash mocks base method.
@@ -1028,17 +1028,17 @@ func (mr *MockExtrasMockRecorder) DebugTraceCall(ctx, req, block, traceCallConfi
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugTraceCall", reflect.TypeOf((*MockExtras)(nil).DebugTraceCall), ctx, req, block, traceCallConfig, result)
 }
 
-// GetBlockRawTransactions mocks base method.
-func (m *MockExtras) GetBlockRawTransactions(ctx context.Context, number *big.Int) ([]string, error) {
+// GetBlockTransactions mocks base method.
+func (m *MockExtras) GetBlockTransactions(ctx context.Context, number *big.Int) ([]*etherclient.BlockTx, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetBlockRawTransactions", ctx, number)
-	ret0, _ := ret[0].([]string)
+	ret := m.ctrl.Call(m, "GetBlockTransactions", ctx, number)
+	ret0, _ := ret[0].([]*etherclient.BlockTx)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetBlockRawTransactions indicates an expected call of GetBlockRawTransactions.
-func (mr *MockExtrasMockRecorder) GetBlockRawTransactions(ctx, number interface{}) *gomock.Call {
+// GetBlockTransactions indicates an expected call of GetBlockTransactions.
+func (mr *MockExtrasMockRecorder) GetBlockTransactions(ctx, number interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBlockRawTransactions", reflect.TypeOf((*MockExtras)(nil).GetBlockRawTransactions), ctx, number)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetBlockTransactions", reflect.TypeOf((*MockExtras)(nil).GetBlockTransactions), ctx, number)
 }

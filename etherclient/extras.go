@@ -4,8 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"math/big"
 
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -76,21 +78,52 @@ func (ec *etherClient) DebugTraceCall(
 	})
 }
 
-// GetBlockRawTransactions returns the raw transactions in a block.
-func (ec *etherClient) GetBlockRawTransactions(ctx context.Context, number *big.Int) ([]string, error) {
-	block, err := ec.BlockByNumber(ctx, number)
+func toBlockNumArg(number *big.Int) string {
+	if number == nil {
+		return "latest"
+	}
+	if number.Sign() >= 0 {
+		return hexutil.EncodeBig(number)
+	}
+	// It's negative.
+	if number.IsInt64() {
+		return rpc.BlockNumber(number.Int64()).String()
+	}
+	// It's negative and large, which is invalid.
+	return fmt.Sprintf("<invalid %d>", number)
+}
+
+type BlockTx struct {
+	From  string          `json:"from"`
+	To    string          `json:"to"`
+	Nonce *hexutil.Uint64 `json:"nonce"`
+	Value string          `json:"value"`
+	Input string          `json:"input"`
+	Hash  string          `json:"hash"`
+}
+
+// GetBlockTransactions returns the raw transactions in a block.
+func (ec *etherClient) GetBlockTransactions(ctx context.Context, number *big.Int) ([]*BlockTx, error) {
+	var block struct {
+		Hash         string     `json:"hash"`
+		Transactions []*BlockTx `json:"transactions"`
+	}
+	err := ec.withBackoff(ctx, "GetBlockTransactions()", func(ctx context.Context, ethClient *ethclient.Client) error {
+		err := ethClient.Client().CallContext(
+			ctx, &block, "eth_getBlockByNumber", toBlockNumArg(number),
+			true,
+		)
+		if err != nil {
+			return err
+		}
+		if block.Hash == "" {
+			return ethereum.NotFound
+		}
+		return nil
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	var rawTxs []string
-	for _, tx := range block.Transactions() {
-		rawTxBytes, err := tx.MarshalBinary()
-		if err != nil {
-			return nil, err
-		}
-		rawTxs = append(rawTxs, (*hexutil.Bytes)(&rawTxBytes).String())
-	}
-
-	return rawTxs, nil
+	return block.Transactions, nil
 }
