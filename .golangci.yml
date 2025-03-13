@@ -3,4 +3,4 @@ linters-settings:
     checks: [ "all", "-SA1019" ]
 
 run:
-  go: "1.23"
+  go: "1.22"
