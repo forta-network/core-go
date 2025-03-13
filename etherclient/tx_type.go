@@ -9,6 +9,24 @@ import (
 // TxType is a Go type for known EVM chain tx types.
 type TxType int
 
+const (
+	LegacyTxType     TxType = 0x00
+	AccessListTxType TxType = 0x01
+	DynamicFeeTxType TxType = 0x02
+	BlobTxType       TxType = 0x03
+	SetCodeTxType    TxType = 0x04 // EIP-7702
+
+	OptimismDepositTxType TxType = 0x7E
+
+	ArbitrumDepositTxType         = 0x64
+	ArbitrumUnsignedTxType        = 0x65
+	ArbitrumContractTxType        = 0x66
+	ArbitrumRetryTxType           = 0x68
+	ArbitrumSubmitRetryableTxType = 0x69
+	ArbitrumInternalTxType        = 0x6A
+	ArbitrumLegacyTxType          = 0x78
+)
+
 func (typ *TxType) UnmarshalJSON(input []byte) error {
 	v, err := hexutil.DecodeBig(string(input[1 : len(input)-1]))
 	if err != nil {
@@ -21,24 +39,6 @@ func (typ *TxType) UnmarshalJSON(input []byte) error {
 func (typ TxType) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf(`"%s"`, hexutil.EncodeUint64(uint64(typ)))), nil
 }
-
-const (
-	LegacyTxType     TxType = 0x00
-	AccessListTxType TxType = 0x01
-	DynamicFeeTxType TxType = 0x02
-	BlobTxType       TxType = 0x03
-	SetCodeTxType    TxType = 0x04
-
-	OptimismDepositTxType TxType = 0x7E
-
-	ArbitrumDepositTxType         = 0x64
-	ArbitrumUnsignedTxType        = 0x65
-	ArbitrumContractTxType        = 0x66
-	ArbitrumRetryTxType           = 0x68
-	ArbitrumSubmitRetryableTxType = 0x69
-	ArbitrumInternalTxType        = 0x6A
-	ArbitrumLegacyTxType          = 0x78
-)
 
 func (typ TxType) String() string {
 	switch typ {
@@ -74,4 +74,14 @@ func (typ TxType) String() string {
 	default:
 		return "unknownTx"
 	}
+}
+
+// IsDepositTx tells if the transaction is a deposit (L1 portal/inbox) transaction.
+func (t TxType) IsDepositTx() bool {
+	return t == OptimismDepositTxType || t == ArbitrumDepositTxType
+}
+
+// IsBlobTx tells if the transaction is a blob transaction.
+func (t TxType) IsBlobTx() bool {
+	return t == BlobTxType
 }
