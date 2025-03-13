@@ -97,7 +97,7 @@ type BlockTx struct {
 	From  string          `json:"from"`
 	To    string          `json:"to"`
 	Nonce *hexutil.Uint64 `json:"nonce"`
-	Value string          `json:"value"`
+	Value *hexutil.Big    `json:"value"`
 	Input string          `json:"input"`
 	Hash  string          `json:"hash"`
 }
