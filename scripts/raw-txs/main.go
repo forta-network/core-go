@@ -26,10 +26,14 @@ func main() {
 	utils.FatalIfError(err)
 
 	for {
-		rawTxs, err := ethClient.GetBlockTransactions(context.Background(), big.NewInt(0).SetUint64(blockNum))
+		txs, err := ethClient.GetBlockTransactions(context.Background(), big.NewInt(0).SetUint64(blockNum))
 		utils.FatalIfError(err)
 
-		logrus.WithField("txCount", len(rawTxs)).Info("got raw transactions")
+		log := logrus.WithField("block", blockNum)
+		log.WithField("txCount", len(txs)).Info("got transactions")
+		for i, tx := range txs {
+			logrus.WithField("index", i).WithField("txType", tx.Type).WithField("hash", tx.Hash).Info("tx")
+		}
 
 		blockNum++
 	}

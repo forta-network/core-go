@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	backoffInitialInterval = time.Second * 2
+	backoffInitialInterval = time.Second * 12
 	backoffMaxInterval     = time.Minute
 	backoffMaxElapsedTime  = time.Minute * 5
 	backoffContextTimeout  = time.Minute

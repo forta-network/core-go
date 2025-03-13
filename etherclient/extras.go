@@ -100,6 +100,22 @@ type BlockTx struct {
 	Value *hexutil.Big    `json:"value"`
 	Input string          `json:"input"`
 	Hash  string          `json:"hash"`
+	Type  TxType          `json:"type"`
+}
+
+// IsType checks if the transaction is of given type.
+func (bt BlockTx) IsType(typ TxType) bool {
+	return bt.Type == typ
+}
+
+// IsDepositTx tells if the transaction is a deposit (L1 portal/inbox) transaction.
+func (bt BlockTx) IsDepositTx() bool {
+	return bt.Type == OptimismDepositTxType || bt.Type == ArbitrumDepositTxType
+}
+
+// IsBlobTx tells if the transaction is a blob transaction.
+func (bt BlockTx) IsBlobTx() bool {
+	return bt.Type == BlobTxType
 }
 
 // GetBlockTransactions returns the raw transactions in a block.
