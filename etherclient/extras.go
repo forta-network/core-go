@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"math/big"
+	"time"
 
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
@@ -75,6 +76,10 @@ func (ec *etherClient) DebugTraceCall(
 
 	return ec.withBackoff(ctx, "DebugTraceCall()", func(ctx context.Context, ethClient *ethclient.Client) error {
 		return ethClient.Client().CallContext(ctx, &result, "debug_traceCall", req, block, traceCallConfig)
+	}, retryOptions{
+		MinBackoff:     ec.retryInterval,
+		MaxElapsedTime: 1 * time.Minute,
+		MaxBackoff:     ec.retryInterval,
 	})
 }
 
@@ -83,6 +88,10 @@ func (ec *etherClient) DebugTraceTransaction(
 ) error {
 	return ec.withBackoff(ctx, "DebugTraceTransaction()", func(ctx context.Context, ethClient *ethclient.Client) error {
 		return ethClient.Client().CallContext(ctx, &result, "debug_traceTransaction", txHash, traceCallConfig)
+	}, retryOptions{
+		MinBackoff:     ec.retryInterval,
+		MaxElapsedTime: 1 * time.Minute,
+		MaxBackoff:     ec.retryInterval,
 	})
 }
 

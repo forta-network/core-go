@@ -2,25 +2,21 @@ package etherclient
 
 import (
 	"context"
+	"errors"
 	"math/big"
 	"time"
 
-	"github.com/cenkalti/backoff"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/forta-network/core-go/etherclient/provider"
-	"github.com/sirupsen/logrus"
 )
 
-const (
-	backoffInitialInterval = time.Second * 8
-	backoffMaxInterval     = time.Second * 20
-	backoffMaxElapsedTime  = time.Minute * 5
-	backoffContextTimeout  = time.Minute
-)
+const defaultRetryInterval = time.Second * 15
+
+var ErrNotFound = errors.New("not found")
 
 // EthClient is the original interface from go-ethereum.
 type EthClient interface {
@@ -40,12 +36,27 @@ type EthClient interface {
 	ethereum.TransactionSender
 	ethereum.BlockNumberReader
 	ethereum.FeeHistoryReader
+
+	PeerCount(ctx context.Context) (uint64, error)
+	BlockReceipts(ctx context.Context, blockNrOrHash rpc.BlockNumberOrHash) ([]*types.Receipt, error)
+	TransactionSender(ctx context.Context, tx *types.Transaction, block common.Hash, index uint) (common.Address, error)
+	NetworkID(ctx context.Context) (*big.Int, error)
+	BalanceAtHash(ctx context.Context, account common.Address, blockHash common.Hash) (*big.Int, error)
+	StorageAtHash(ctx context.Context, account common.Address, key common.Hash, blockHash common.Hash) ([]byte, error)
+	CodeAtHash(ctx context.Context, account common.Address, blockHash common.Hash) ([]byte, error)
+	NonceAtHash(ctx context.Context, account common.Address, blockHash common.Hash) (uint64, error)
+	CallContractAtHash(ctx context.Context, msg ethereum.CallMsg, blockHash common.Hash) ([]byte, error)
+
+	Client() *rpc.Client
+	Close()
 }
 
 // EtherClient is the extended interface implemented implemented by this package.
 type EtherClient interface {
 	EthClient
 	Extras
+
+	SetRetryInterval(d time.Duration)
 }
 
 type Extras interface {
@@ -64,10 +75,12 @@ type Extras interface {
 // etherClient is a wrapper of go-ethereum ethclient.Client which uses multiple fallback
 // clients and retries every request.
 type etherClient struct {
-	provider provider.Provider[*ethclient.Client]
+	provider      provider.Provider[*ethclient.Client]
+	retryInterval time.Duration
 }
 
 var _ EtherClient = &etherClient{}
+var _ EthClient = &ethclient.Client{}
 
 // NewRetrierClient dials all given URLs and creates a client that works with multiple clients
 // and a backoff logic.
@@ -80,39 +93,22 @@ func DialContext(ctx context.Context, rawurls ...string) (*etherClient, error) {
 		}
 		clients = append(clients, c)
 	}
-	return &etherClient{provider: provider.NewRingProvider(clients...)}, nil
+	return &etherClient{
+		provider:      provider.NewRingProvider(clients...),
+		retryInterval: defaultRetryInterval,
+	}, nil
+}
+
+func (ec *etherClient) SetRetryInterval(d time.Duration) {
+	ec.retryInterval = d
+}
+
+func (ec *etherClient) Client() *rpc.Client {
+	return ec.provider.Provide().Client()
 }
 
 func (ec *etherClient) Close() {
 	ec.provider.Close()
-}
-
-func (ec *etherClient) withBackoff(
-	ctx context.Context,
-	method string,
-	operation func(ctx context.Context, ethClient *ethclient.Client) error,
-) error {
-	bo := backoff.NewExponentialBackOff()
-	bo.InitialInterval = backoffInitialInterval
-	bo.MaxInterval = backoffMaxInterval
-	bo.MaxElapsedTime = backoffMaxElapsedTime
-	err := backoff.Retry(func() error {
-		if ctx.Err() != nil {
-			return backoff.Permanent(ctx.Err())
-		}
-		tCtx, cancel := context.WithTimeout(ctx, backoffContextTimeout)
-		err := operation(tCtx, ec.provider.Provide())
-		cancel()
-		if err != nil {
-			// Move onto the next provider.
-			ec.provider.Next()
-		}
-		return handleRetryErr(ctx, method, err)
-	}, bo)
-	if err != nil {
-		logrus.WithError(err).WithField("method", method).Error("retry failed with error")
-	}
-	return err
 }
 
 func (ec *etherClient) ChainID(ctx context.Context) (ret1 *big.Int, err error) {
@@ -120,6 +116,8 @@ func (ec *etherClient) ChainID(ctx context.Context) (ret1 *big.Int, err error) {
 		r1, e := ethClient.ChainID(ctx)
 		ret1 = r1
 		return e
+	}, retryOptions{
+		MaxElapsedTime: 1 * time.Minute,
 	})
 	return
 }
@@ -127,8 +125,18 @@ func (ec *etherClient) ChainID(ctx context.Context) (ret1 *big.Int, err error) {
 func (ec *etherClient) BlockByHash(ctx context.Context, hash common.Hash) (ret1 *types.Block, err error) {
 	err = ec.withBackoff(ctx, "BlockByHash()", func(ctx context.Context, ethClient *ethclient.Client) error {
 		r1, e := ethClient.BlockByHash(ctx, hash)
+		if e != nil {
+			return e
+		}
+		if r1.Hash().Big().Cmp(big.NewInt(0)) == 0 {
+			return ErrNotFound
+		}
 		ret1 = r1
 		return e
+	}, retryOptions{
+		MinBackoff:     5 * time.Second,
+		MaxElapsedTime: 12 * time.Hour,
+		MaxBackoff:     15 * time.Second,
 	})
 	return
 }
@@ -136,8 +144,18 @@ func (ec *etherClient) BlockByHash(ctx context.Context, hash common.Hash) (ret1 
 func (ec *etherClient) BlockByNumber(ctx context.Context, number *big.Int) (ret1 *types.Block, err error) {
 	err = ec.withBackoff(ctx, "BlockByNumber()", func(ctx context.Context, ethClient *ethclient.Client) error {
 		r1, e := ethClient.BlockByNumber(ctx, number)
+		if e != nil {
+			return e
+		}
+		if r1.Hash().Big().Cmp(big.NewInt(0)) == 0 {
+			return ErrNotFound
+		}
 		ret1 = r1
 		return e
+	}, retryOptions{
+		MinBackoff:     ec.retryInterval,
+		MaxElapsedTime: 12 * time.Hour,
+		MaxBackoff:     ec.retryInterval,
 	})
 	return
 }
@@ -147,6 +165,8 @@ func (ec *etherClient) BlockNumber(ctx context.Context) (ret1 uint64, err error)
 		r1, e := ethClient.BlockNumber(ctx)
 		ret1 = r1
 		return e
+	}, retryOptions{
+		MaxElapsedTime: 12 * time.Hour,
 	})
 	return
 }
@@ -227,8 +247,16 @@ func (ec *etherClient) TransactionInBlock(ctx context.Context, blockHash common.
 func (ec *etherClient) TransactionReceipt(ctx context.Context, txHash common.Hash) (ret1 *types.Receipt, err error) {
 	err = ec.withBackoff(ctx, "TransactionReceipt()", func(ctx context.Context, ethClient *ethclient.Client) error {
 		r1, e := ethClient.TransactionReceipt(ctx, txHash)
+		if e != nil {
+			return e
+		}
+		if r1.TxHash.Big().Cmp(big.NewInt(0)) == 0 {
+			return errors.New("receipt was empty")
+		}
 		ret1 = r1
 		return e
+	}, retryOptions{
+		MaxElapsedTime: 5 * time.Minute,
 	})
 	return
 }
@@ -319,6 +347,10 @@ func (ec *etherClient) NonceAt(ctx context.Context, account common.Address, bloc
 		r1, e := ethClient.NonceAt(ctx, account, blockNumber)
 		ret1 = r1
 		return e
+	}, retryOptions{
+		MinBackoff:     ec.retryInterval,
+		MaxElapsedTime: 12 * time.Hour,
+		MaxBackoff:     ec.retryInterval,
 	})
 	return
 }
@@ -328,6 +360,10 @@ func (ec *etherClient) NonceAtHash(ctx context.Context, account common.Address, 
 		r1, e := ethClient.NonceAtHash(ctx, account, blockHash)
 		ret1 = r1
 		return e
+	}, retryOptions{
+		MinBackoff:     ec.retryInterval,
+		MaxElapsedTime: 12 * time.Hour,
+		MaxBackoff:     ec.retryInterval,
 	})
 	return
 }
@@ -337,6 +373,10 @@ func (ec *etherClient) FilterLogs(ctx context.Context, q ethereum.FilterQuery) (
 		r1, e := ethClient.FilterLogs(ctx, q)
 		ret1 = r1
 		return e
+	}, retryOptions{
+		MinBackoff:     ec.retryInterval,
+		MaxElapsedTime: 12 * time.Hour,
+		MaxBackoff:     15 * time.Second,
 	})
 	return
 }
