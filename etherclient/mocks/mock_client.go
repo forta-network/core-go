@@ -720,6 +720,21 @@ func (mr *MockEtherClientMockRecorder) BlockByHash(ctx, hash interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BlockByHash", reflect.TypeOf((*MockEtherClient)(nil).BlockByHash), ctx, hash)
 }
 
+// BlockByHashCommon mocks base method.
+func (m *MockEtherClient) BlockByHashCommon(ctx context.Context, hash common.Hash) (*etherclient.Block, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BlockByHashCommon", ctx, hash)
+	ret0, _ := ret[0].(*etherclient.Block)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BlockByHashCommon indicates an expected call of BlockByHashCommon.
+func (mr *MockEtherClientMockRecorder) BlockByHashCommon(ctx, hash interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BlockByHashCommon", reflect.TypeOf((*MockEtherClient)(nil).BlockByHashCommon), ctx, hash)
+}
+
 // BlockByNumber mocks base method.
 func (m *MockEtherClient) BlockByNumber(ctx context.Context, number *big.Int) (*types.Block, error) {
 	m.ctrl.T.Helper()
@@ -733,6 +748,21 @@ func (m *MockEtherClient) BlockByNumber(ctx context.Context, number *big.Int) (*
 func (mr *MockEtherClientMockRecorder) BlockByNumber(ctx, number interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BlockByNumber", reflect.TypeOf((*MockEtherClient)(nil).BlockByNumber), ctx, number)
+}
+
+// BlockByNumberCommon mocks base method.
+func (m *MockEtherClient) BlockByNumberCommon(ctx context.Context, number *big.Int) (*etherclient.Block, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BlockByNumberCommon", ctx, number)
+	ret0, _ := ret[0].(*etherclient.Block)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BlockByNumberCommon indicates an expected call of BlockByNumberCommon.
+func (mr *MockEtherClientMockRecorder) BlockByNumberCommon(ctx, number interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BlockByNumberCommon", reflect.TypeOf((*MockEtherClient)(nil).BlockByNumberCommon), ctx, number)
 }
 
 // BlockNumber mocks base method.
@@ -1362,6 +1392,36 @@ func NewMockExtras(ctrl *gomock.Controller) *MockExtras {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockExtras) EXPECT() *MockExtrasMockRecorder {
 	return m.recorder
+}
+
+// BlockByHashCommon mocks base method.
+func (m *MockExtras) BlockByHashCommon(ctx context.Context, hash common.Hash) (*etherclient.Block, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BlockByHashCommon", ctx, hash)
+	ret0, _ := ret[0].(*etherclient.Block)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BlockByHashCommon indicates an expected call of BlockByHashCommon.
+func (mr *MockExtrasMockRecorder) BlockByHashCommon(ctx, hash interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BlockByHashCommon", reflect.TypeOf((*MockExtras)(nil).BlockByHashCommon), ctx, hash)
+}
+
+// BlockByNumberCommon mocks base method.
+func (m *MockExtras) BlockByNumberCommon(ctx context.Context, number *big.Int) (*etherclient.Block, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BlockByNumberCommon", ctx, number)
+	ret0, _ := ret[0].(*etherclient.Block)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// BlockByNumberCommon indicates an expected call of BlockByNumberCommon.
+func (mr *MockExtrasMockRecorder) BlockByNumberCommon(ctx, number interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BlockByNumberCommon", reflect.TypeOf((*MockExtras)(nil).BlockByNumberCommon), ctx, number)
 }
 
 // DebugTraceCall mocks base method.

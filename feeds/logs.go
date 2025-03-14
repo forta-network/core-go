@@ -11,6 +11,7 @@ import (
 
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
@@ -53,18 +54,22 @@ func (l *logFeed) GetLogsForRange(startBlock *big.Int, endBlock *big.Int) ([]typ
 
 func (l *logFeed) GetLogsForLastBlocks(blocksAgo int64) ([]types.Log, error) {
 
-	blk, err := l.client.BlockByNumber(l.ctx, nil)
+	blk, err := l.client.BlockByNumberCommon(l.ctx, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	endBlock := blk.Number()
+	endBlock, err := hexutil.DecodeBig(blk.Number)
+	if err != nil {
+		return nil, err
+	}
+
 	startBlock := big.NewInt(endBlock.Int64() - blocksAgo)
 
 	return l.GetLogsForRange(startBlock, endBlock)
 }
 
-func (l *logFeed) ForEachLog(handler func(blk *types.Block, logEntry types.Log) error, finishBlockHandler func(blk *types.Block) error) error {
+func (l *logFeed) ForEachLog(handler func(blk *etherclient.Block, logEntry types.Log) error, finishBlockHandler func(blk *etherclient.Block) error) error {
 	eg, ctx := errgroup.WithContext(l.ctx)
 
 	var topics [][]common.Hash
@@ -91,22 +96,26 @@ func (l *logFeed) ForEachLog(handler func(blk *types.Block, logEntry types.Log) 
 				}
 			}
 
-			blk, err := l.client.BlockByNumber(l.ctx, currentBlock)
+			blk, err := l.client.BlockByNumberCommon(l.ctx, currentBlock)
 			if err != nil {
-				log.Error("error while getting latest block number:", err)
+				log.WithError(err).Error("error while getting latest block number")
 				return err
 			}
 
 			// initialize current block if nil
 			if currentBlock == nil {
-				currentBlock = blk.Number()
+				currentBlock, err = hexutil.DecodeBig(blk.Number)
+				if err != nil {
+					log.Errorf("error while converting latest block number: %s, %s", blk.Number, err)
+					return err
+				}
 			}
 
 			blockToRetrieve := big.NewInt(currentBlock.Int64() - int64(l.offset))
 
 			// if offset is set, get previous block instead
 			if l.offset > 0 {
-				pastBlock, err := l.client.BlockByNumber(l.ctx, blockToRetrieve)
+				pastBlock, err := l.client.BlockByNumberCommon(l.ctx, blockToRetrieve)
 				if err != nil {
 					log.WithError(err).Error("error while getting past block")
 					return err
