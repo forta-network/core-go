@@ -29,6 +29,8 @@ type logFeed struct {
 	addrsMu   sync.RWMutex
 }
 
+var _ LogFeed = &logFeed{}
+
 func (l *logFeed) GetLogsForRange(startBlock *big.Int, endBlock *big.Int) ([]types.Log, error) {
 	addrs := l.getAddrs()
 

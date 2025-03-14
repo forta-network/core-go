@@ -9,6 +9,7 @@ import (
 	reflect "reflect"
 
 	types "github.com/ethereum/go-ethereum/core/types"
+	etherclient "github.com/forta-network/core-go/etherclient"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -48,7 +49,7 @@ func (mr *MockLogFeedMockRecorder) AddAddress(newAddr interface{}) *gomock.Call 
 }
 
 // ForEachLog mocks base method.
-func (m *MockLogFeed) ForEachLog(handler func(*types.Block, types.Log) error, finishBlockHandler func(*types.Block) error) error {
+func (m *MockLogFeed) ForEachLog(handler func(*etherclient.Block, types.Log) error, finishBlockHandler func(*etherclient.Block) error) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ForEachLog", handler, finishBlockHandler)
 	ret0, _ := ret[0].(error)
