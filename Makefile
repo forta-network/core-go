@@ -40,6 +40,7 @@ mocks:
 	$(MOCKGEN) -source aws/ses.go -destination aws/mocks/mock_ses.go
 	$(MOCKGEN) -source aws/dynamodb.go -destination aws/mocks/mock_dynamodb.go
 	$(MOCKGEN) -source store/dynamo/store.go -destination store/dynamo/mocks/mock_dynamo.go
+	$(MOCKGEN) -source feeds/interfaces.go -destination feeds/mocks/mock_feeds.go
 
 .PHONY: test
 test:
