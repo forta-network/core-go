@@ -34,12 +34,14 @@ lint: require-tools fmt
 .PHONY: mocks
 mocks:
 	$(MOCKGEN) -source etherclient/client.go -destination etherclient/mocks/mock_client.go
+	$(MOCKGEN) -source etherclient/contractbackend/contract_backend.go -destination etherclient/contractbackend/mocks/mock_contract_backend.go
 	$(MOCKGEN) -source aws/sns.go -destination aws/mocks/mock_sns.go
 	$(MOCKGEN) -source aws/sqs.go -destination aws/mocks/mock_sqs.go
 	$(MOCKGEN) -source aws/s3.go -destination aws/mocks/mock_s3.go
 	$(MOCKGEN) -source aws/ses.go -destination aws/mocks/mock_ses.go
 	$(MOCKGEN) -source aws/dynamodb.go -destination aws/mocks/mock_dynamodb.go
 	$(MOCKGEN) -source store/dynamo/store.go -destination store/dynamo/mocks/mock_dynamo.go
+	$(MOCKGEN) -source feeds/interfaces.go -destination feeds/mocks/mock_feeds.go
 
 .PHONY: test
 test:
