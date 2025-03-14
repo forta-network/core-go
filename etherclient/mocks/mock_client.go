@@ -631,6 +631,20 @@ func (mr *MockEtherClientMockRecorder) DebugTraceCall(ctx, req, block, traceCall
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugTraceCall", reflect.TypeOf((*MockEtherClient)(nil).DebugTraceCall), ctx, req, block, traceCallConfig, result)
 }
 
+// DebugTraceTransaction mocks base method.
+func (m *MockEtherClient) DebugTraceTransaction(ctx context.Context, txHash string, traceCallConfig etherclient.TraceCallConfig, result interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DebugTraceTransaction", ctx, txHash, traceCallConfig, result)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DebugTraceTransaction indicates an expected call of DebugTraceTransaction.
+func (mr *MockEtherClientMockRecorder) DebugTraceTransaction(ctx, txHash, traceCallConfig, result interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugTraceTransaction", reflect.TypeOf((*MockEtherClient)(nil).DebugTraceTransaction), ctx, txHash, traceCallConfig, result)
+}
+
 // EstimateGas mocks base method.
 func (m *MockEtherClient) EstimateGas(ctx context.Context, call ethereum.CallMsg) (uint64, error) {
 	m.ctrl.T.Helper()
@@ -1026,6 +1040,20 @@ func (m *MockExtras) DebugTraceCall(ctx context.Context, req *etherclient.TraceC
 func (mr *MockExtrasMockRecorder) DebugTraceCall(ctx, req, block, traceCallConfig, result interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugTraceCall", reflect.TypeOf((*MockExtras)(nil).DebugTraceCall), ctx, req, block, traceCallConfig, result)
+}
+
+// DebugTraceTransaction mocks base method.
+func (m *MockExtras) DebugTraceTransaction(ctx context.Context, txHash string, traceCallConfig etherclient.TraceCallConfig, result interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DebugTraceTransaction", ctx, txHash, traceCallConfig, result)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DebugTraceTransaction indicates an expected call of DebugTraceTransaction.
+func (mr *MockExtrasMockRecorder) DebugTraceTransaction(ctx, txHash, traceCallConfig, result interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugTraceTransaction", reflect.TypeOf((*MockExtras)(nil).DebugTraceTransaction), ctx, txHash, traceCallConfig, result)
 }
 
 // GetBlockTransactions mocks base method.
