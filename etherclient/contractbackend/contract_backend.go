@@ -1,4 +1,4 @@
-package etherclient
+package contractbackend
 
 import (
 	"context"
