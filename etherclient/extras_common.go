@@ -77,8 +77,8 @@ type Withdrawal struct {
 	Amount         string `json:"amount"`
 }
 
-func (ec *etherClient) BlockByHashCommon(ctx context.Context, hash common.Hash) (ret1 *Block, err error) {
-	err = ec.withBackoff(ctx, "BlockByHashCommon()", func(ctx context.Context, ethClient *ethclient.Client) error {
+func (ec *etherClient) GetBlockByHash(ctx context.Context, hash common.Hash) (ret1 *Block, err error) {
+	err = ec.withBackoff(ctx, "GetBlockByHash()", func(ctx context.Context, ethClient *ethclient.Client) error {
 		var r1 Block
 		e := ethClient.Client().CallContext(
 			ctx, &r1, "eth_getBlockByHash", hash,
@@ -100,8 +100,8 @@ func (ec *etherClient) BlockByHashCommon(ctx context.Context, hash common.Hash) 
 	return
 }
 
-func (ec *etherClient) BlockByNumberCommon(ctx context.Context, number *big.Int) (ret1 *Block, err error) {
-	err = ec.withBackoff(ctx, "BlockByNumberCommon()", func(ctx context.Context, ethClient *ethclient.Client) error {
+func (ec *etherClient) GetBlockByNumber(ctx context.Context, number *big.Int) (ret1 *Block, err error) {
+	err = ec.withBackoff(ctx, "GetBlockByNumber()", func(ctx context.Context, ethClient *ethclient.Client) error {
 		var r1 Block
 		e := ethClient.Client().CallContext(
 			ctx, &r1, "eth_getBlockByNumber", toBlockNumArg(number),

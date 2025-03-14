@@ -56,7 +56,7 @@ func (l *logFeed) GetLogsForRange(startBlock *big.Int, endBlock *big.Int) ([]typ
 
 func (l *logFeed) GetLogsForLastBlocks(blocksAgo int64) ([]types.Log, error) {
 
-	blk, err := l.client.BlockByNumberCommon(l.ctx, nil)
+	blk, err := l.client.GetBlockByNumber(l.ctx, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func (l *logFeed) ForEachLog(handler func(blk *etherclient.Block, logEntry types
 				}
 			}
 
-			blk, err := l.client.BlockByNumberCommon(l.ctx, currentBlock)
+			blk, err := l.client.GetBlockByNumber(l.ctx, currentBlock)
 			if err != nil {
 				log.WithError(err).Error("error while getting latest block number")
 				return err
@@ -117,7 +117,7 @@ func (l *logFeed) ForEachLog(handler func(blk *etherclient.Block, logEntry types
 
 			// if offset is set, get previous block instead
 			if l.offset > 0 {
-				pastBlock, err := l.client.BlockByNumberCommon(l.ctx, blockToRetrieve)
+				pastBlock, err := l.client.GetBlockByNumber(l.ctx, blockToRetrieve)
 				if err != nil {
 					log.WithError(err).Error("error while getting past block")
 					return err

@@ -71,8 +71,8 @@ type Extras interface {
 	) error
 	GetBlockTransactions(ctx context.Context, number *big.Int) ([]*BlockTx, error)
 
-	BlockByHashCommon(ctx context.Context, hash common.Hash) (ret1 *Block, err error)
-	BlockByNumberCommon(ctx context.Context, number *big.Int) (ret1 *Block, err error)
+	GetBlockByHash(ctx context.Context, hash common.Hash) (ret1 *Block, err error)
+	GetBlockByNumber(ctx context.Context, number *big.Int) (ret1 *Block, err error)
 }
 
 // etherClient is a wrapper of go-ethereum ethclient.Client which uses multiple fallback
