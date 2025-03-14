@@ -54,6 +54,10 @@ type Extras interface {
 		block any, traceCallConfig TraceCallConfig,
 		result interface{},
 	) error
+	DebugTraceTransaction(
+		ctx context.Context, txHash string, traceCallConfig TraceCallConfig,
+		result interface{},
+	) error
 	GetBlockTransactions(ctx context.Context, number *big.Int) ([]*BlockTx, error)
 }
 

@@ -78,6 +78,14 @@ func (ec *etherClient) DebugTraceCall(
 	})
 }
 
+func (ec *etherClient) DebugTraceTransaction(
+	ctx context.Context, txHash string, traceCallConfig TraceCallConfig, result interface{},
+) error {
+	return ec.withBackoff(ctx, "DebugTraceTransaction()", func(ctx context.Context, ethClient *ethclient.Client) error {
+		return ethClient.Client().CallContext(ctx, &result, "debug_traceTransaction", txHash, traceCallConfig)
+	})
+}
+
 func toBlockNumArg(number *big.Int) string {
 	if number == nil {
 		return "latest"
