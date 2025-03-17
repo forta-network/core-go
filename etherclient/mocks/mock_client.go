@@ -866,6 +866,20 @@ func (mr *MockEtherClientMockRecorder) CodeAtHash(ctx, account, blockHash interf
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CodeAtHash", reflect.TypeOf((*MockEtherClient)(nil).CodeAtHash), ctx, account, blockHash)
 }
 
+// DebugTraceBlockByNumber mocks base method.
+func (m *MockEtherClient) DebugTraceBlockByNumber(ctx context.Context, blockNumber *big.Int, traceCallConfig etherclient.TraceCallConfig, result interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DebugTraceBlockByNumber", ctx, blockNumber, traceCallConfig, result)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DebugTraceBlockByNumber indicates an expected call of DebugTraceBlockByNumber.
+func (mr *MockEtherClientMockRecorder) DebugTraceBlockByNumber(ctx, blockNumber, traceCallConfig, result interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugTraceBlockByNumber", reflect.TypeOf((*MockEtherClient)(nil).DebugTraceBlockByNumber), ctx, blockNumber, traceCallConfig, result)
+}
+
 // DebugTraceCall mocks base method.
 func (m *MockEtherClient) DebugTraceCall(ctx context.Context, req *etherclient.TraceCallTransaction, block any, traceCallConfig etherclient.TraceCallConfig, result interface{}) error {
 	m.ctrl.T.Helper()
@@ -1392,6 +1406,20 @@ func NewMockExtras(ctrl *gomock.Controller) *MockExtras {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockExtras) EXPECT() *MockExtrasMockRecorder {
 	return m.recorder
+}
+
+// DebugTraceBlockByNumber mocks base method.
+func (m *MockExtras) DebugTraceBlockByNumber(ctx context.Context, blockNumber *big.Int, traceCallConfig etherclient.TraceCallConfig, result interface{}) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DebugTraceBlockByNumber", ctx, blockNumber, traceCallConfig, result)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DebugTraceBlockByNumber indicates an expected call of DebugTraceBlockByNumber.
+func (mr *MockExtrasMockRecorder) DebugTraceBlockByNumber(ctx, blockNumber, traceCallConfig, result interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugTraceBlockByNumber", reflect.TypeOf((*MockExtras)(nil).DebugTraceBlockByNumber), ctx, blockNumber, traceCallConfig, result)
 }
 
 // DebugTraceCall mocks base method.

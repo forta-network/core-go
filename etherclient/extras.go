@@ -95,6 +95,25 @@ func (ec *etherClient) DebugTraceTransaction(
 	})
 }
 
+type BlockTraceTx struct {
+	TxHash string      `json:"txHash"`
+	Result *TracedCall `json:"result"`
+}
+
+type TracedBlock []*BlockTraceTx
+
+func (ec *etherClient) DebugTraceBlockByNumber(
+	ctx context.Context, blockNumber *big.Int, traceCallConfig TraceCallConfig, result interface{},
+) error {
+	return ec.withBackoff(ctx, "DebugTraceBlockByNumber()", func(ctx context.Context, ethClient *ethclient.Client) error {
+		return ethClient.Client().CallContext(ctx, &result, "debug_traceBlockByNumber", toBlockNumArg(blockNumber), traceCallConfig)
+	}, retryOptions{
+		MinBackoff:     ec.retryInterval,
+		MaxElapsedTime: 1 * time.Minute,
+		MaxBackoff:     ec.retryInterval,
+	})
+}
+
 func toBlockNumArg(number *big.Int) string {
 	if number == nil {
 		return "latest"
