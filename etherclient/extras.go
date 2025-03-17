@@ -138,6 +138,10 @@ func (ec *etherClient) GetBlockTransactions(ctx context.Context, number *big.Int
 			return ethereum.NotFound
 		}
 		return nil
+	}, retryOptions{
+		MinBackoff:     ec.retryInterval,
+		MaxElapsedTime: 12 * time.Hour,
+		MaxBackoff:     ec.retryInterval,
 	})
 	if err != nil {
 		return nil, err
