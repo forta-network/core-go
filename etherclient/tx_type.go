@@ -78,7 +78,17 @@ func (typ TxType) String() string {
 
 // IsDepositTx tells if the transaction is a deposit (L1 portal/inbox) transaction.
 func (t TxType) IsDepositTx() bool {
-	return t == OptimismDepositTxType || t == ArbitrumDepositTxType
+	switch t {
+	case OptimismDepositTxType:
+		return true
+
+	case ArbitrumDepositTxType, ArbitrumUnsignedTxType, ArbitrumContractTxType, ArbitrumRetryTxType,
+		ArbitrumSubmitRetryableTxType:
+		return true
+
+	default:
+		return false
+	}
 }
 
 // IsBlobTx tells if the transaction is a blob transaction.
