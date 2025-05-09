@@ -7,6 +7,7 @@ package mock_feeds
 import (
 	big "math/big"
 	reflect "reflect"
+	time "time"
 
 	types "github.com/ethereum/go-ethereum/core/types"
 	etherclient "github.com/forta-network/core-go/etherclient"
@@ -60,6 +61,20 @@ func (m *MockLogFeed) ForEachLog(handler func(*etherclient.Block, types.Log) err
 func (mr *MockLogFeedMockRecorder) ForEachLog(handler, finishBlockHandler interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForEachLog", reflect.TypeOf((*MockLogFeed)(nil).ForEachLog), handler, finishBlockHandler)
+}
+
+// ForEachLogPolling mocks base method.
+func (m *MockLogFeed) ForEachLogPolling(interval time.Duration, handler func(*etherclient.Block, types.Log) error, finishBlockHandler func(*etherclient.Block) error) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ForEachLogPolling", interval, handler, finishBlockHandler)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ForEachLogPolling indicates an expected call of ForEachLogPolling.
+func (mr *MockLogFeedMockRecorder) ForEachLogPolling(interval, handler, finishBlockHandler interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ForEachLogPolling", reflect.TypeOf((*MockLogFeed)(nil).ForEachLogPolling), interval, handler, finishBlockHandler)
 }
 
 // GetLogsForLastBlocks mocks base method.

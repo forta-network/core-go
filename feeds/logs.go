@@ -6,6 +6,7 @@ import (
 	"math/big"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/forta-network/core-go/etherclient"
 
@@ -156,6 +157,109 @@ func (l *logFeed) ForEachLog(handler func(blk *etherclient.Block, logEntry types
 		log.Info("log subscription closed")
 	}()
 	return eg.Wait()
+}
+
+// ForEachLogPolling processes every block that appears on‑chain,
+// polling the RPC node at the given interval.
+//
+//   - It remembers the last processed height in-memory.
+//   - On every tick it asks the node for the current tip and
+//     loops from lastProcessed+1 … tip, invoking the handlers
+//     exactly once per block.
+//   - If l.endBlock != nil the loop stops after that height
+func (l *logFeed) ForEachLogPolling(
+	interval time.Duration,
+	handler func(blk *etherclient.Block, lg types.Log) error,
+	finishBlockHandler func(blk *etherclient.Block) error,
+) error {
+	// prepare topic matrix once
+	topics := make([][]common.Hash, len(l.topics))
+	for i, set := range l.topics {
+		topics[i] = make([]common.Hash, len(set))
+		for j, t := range set {
+			topics[i][j] = common.HexToHash(t)
+		}
+	}
+
+	var cursor *big.Int
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-l.ctx.Done():
+			return l.ctx.Err()
+
+		case <-ticker.C:
+			// discover the latest tip
+			tipUint, err := l.client.BlockNumber(l.ctx)
+			if err != nil {
+				return fmt.Errorf("tip discovery failed: %w", err)
+			}
+			tip := big.NewInt(int64(tipUint))
+
+			// initialize cursor on first iteration
+			if cursor == nil {
+				if l.startBlock != nil {
+					cursor = new(big.Int).Set(l.startBlock)
+				} else {
+					cursor = new(big.Int).Set(tip)
+				}
+			}
+
+			// if nothing new, wait for next tick
+			if cursor.Cmp(tip) > 0 {
+				continue
+			}
+
+			// walk from cursor … tip
+			for cursor.Cmp(tip) <= 0 {
+				// optional stop height
+				if l.endBlock != nil && cursor.Cmp(l.endBlock) > 0 {
+					return nil
+				}
+
+				// fetch block
+				blk, err := l.client.GetBlockByNumber(l.ctx, cursor)
+				if err != nil {
+					// node not indexed yet? retry same cursor next tick
+					if strings.Contains(err.Error(), "not found") {
+						break
+					}
+					return err
+				}
+
+				// build filter query (apply offset)
+				from := new(big.Int).Sub(cursor, big.NewInt(int64(l.offset)))
+				q := ethereum.FilterQuery{
+					FromBlock: from,
+					ToBlock:   from,
+					Addresses: l.getAddrs(),
+					Topics:    topics,
+				}
+				logs, err := l.client.FilterLogs(l.ctx, q)
+				if err != nil {
+					if strings.Contains(err.Error(), "not found") {
+						break
+					}
+					return err
+				}
+
+				// deliver logs
+				for _, lg := range logs {
+					if err := handler(blk, lg); err != nil {
+						return err
+					}
+				}
+				if err := finishBlockHandler(blk); err != nil {
+					return err
+				}
+
+				// advance cursor by 1
+				cursor.Add(cursor, big.NewInt(1))
+			}
+		}
+	}
 }
 
 func (l *logFeed) getAddrs() []common.Address {
