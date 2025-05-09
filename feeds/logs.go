@@ -181,12 +181,7 @@ func (l *logFeed) ForEachLogPolling(
 		}
 	}
 
-	// initial height = cfg.StartBlock (may be nil ➜ latest‑tip on first tick)
-	var lastProcessed *big.Int
-	if l.startBlock != nil {
-		lastProcessed = new(big.Int).Sub(l.startBlock, big.NewInt(1))
-	}
-
+	var cursor *big.Int
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
@@ -196,56 +191,61 @@ func (l *logFeed) ForEachLogPolling(
 			return l.ctx.Err()
 
 		case <-ticker.C:
-			// ── discover current tip ──────────────────────────────────────────
-			tipInt, err := l.client.BlockNumber(l.ctx)
+			// discover the latest tip
+			tipUint, err := l.client.BlockNumber(l.ctx)
 			if err != nil {
 				return fmt.Errorf("tip discovery failed: %w", err)
 			}
+			tip := big.NewInt(int64(tipUint))
 
-			tip := big.NewInt(int64(tipInt))
-			// initialize lastProcessed if this is the first iteration
-			if lastProcessed == nil {
-				lastProcessed = new(big.Int).Sub(tip, big.NewInt(1))
+			// initialize cursor on first iteration
+			if cursor == nil {
+				if l.startBlock != nil {
+					cursor = new(big.Int).Set(l.startBlock)
+				} else {
+					cursor = new(big.Int).Set(tip)
+				}
 			}
 
-			// no new blocks? keep waiting
-			if tip.Cmp(lastProcessed) <= 0 {
+			// if nothing new, wait for next tick
+			if cursor.Cmp(tip) > 0 {
 				continue
 			}
 
-			// walk from lastProcessed+1 … tip
-			cursor := new(big.Int).Add(lastProcessed, big.NewInt(1))
-			for ; cursor.Cmp(tip) <= 0; cursor.Add(cursor, big.NewInt(1)) {
+			// walk from cursor … tip
+			for cursor.Cmp(tip) <= 0 {
 				// optional stop height
 				if l.endBlock != nil && cursor.Cmp(l.endBlock) > 0 {
 					return nil
 				}
 
+				// fetch block
 				blk, err := l.client.GetBlockByNumber(l.ctx, cursor)
 				if err != nil {
-					// skip races where the node hasn’t fully indexed the block yet
+					// node not indexed yet? retry same cursor next tick
 					if strings.Contains(err.Error(), "not found") {
-						cursor.Sub(cursor, big.NewInt(1)) // retry same height next tick
 						break
 					}
 					return err
 				}
 
+				// build filter query (apply offset)
+				from := new(big.Int).Sub(cursor, big.NewInt(int64(l.offset)))
 				q := ethereum.FilterQuery{
-					FromBlock: new(big.Int).Sub(cursor, big.NewInt(int64(l.offset))),
-					ToBlock:   new(big.Int).Sub(cursor, big.NewInt(int64(l.offset))),
+					FromBlock: from,
+					ToBlock:   from,
 					Addresses: l.getAddrs(),
 					Topics:    topics,
 				}
 				logs, err := l.client.FilterLogs(l.ctx, q)
 				if err != nil {
 					if strings.Contains(err.Error(), "not found") {
-						cursor.Sub(cursor, big.NewInt(1))
 						break
 					}
 					return err
 				}
 
+				// deliver logs
 				for _, lg := range logs {
 					if err := handler(blk, lg); err != nil {
 						return err
@@ -255,7 +255,8 @@ func (l *logFeed) ForEachLogPolling(
 					return err
 				}
 
-				lastProcessed = new(big.Int).Set(cursor)
+				// advance cursor by 1
+				cursor.Add(cursor, big.NewInt(1))
 			}
 		}
 	}
