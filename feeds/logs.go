@@ -197,12 +197,12 @@ func (l *logFeed) ForEachLogPolling(
 
 		case <-ticker.C:
 			// ── discover current tip ──────────────────────────────────────────
-			head, err := l.client.GetBlockByNumber(l.ctx, nil)
+			tipInt, err := l.client.BlockNumber(l.ctx)
 			if err != nil {
 				return fmt.Errorf("tip discovery failed: %w", err)
 			}
-			tip, _ := hexutil.DecodeBig(head.Number)
 
+			tip := big.NewInt(int64(tipInt))
 			// initialize lastProcessed if this is the first iteration
 			if lastProcessed == nil {
 				lastProcessed = new(big.Int).Sub(tip, big.NewInt(1))

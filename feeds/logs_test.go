@@ -87,7 +87,7 @@ func TestLogFeed_ForEachLogPolling(t *testing.T) {
 	addr := "0x38C1e080BeEb26eeA91932178E62987598230271"
 	logs := testLogs(0, 1, 2)
 
-	client.EXPECT().GetBlockByNumber(gomock.Any(), nil).Return(&etherclient.Block{Number: "0xf"}, nil).Times(1)
+	client.EXPECT().BlockNumber(gomock.Any()).Return(uint64(16), nil).Times(1)
 
 	client.EXPECT().GetBlockByNumber(gomock.Any(), big.NewInt(13)).Return(&etherclient.Block{Number: "0x0"}, nil).Times(1)
 	client.EXPECT().FilterLogs(gomock.Any(), gomock.Any()).Return([]types.Log{logs[0]}, nil).Times(1)
