@@ -60,7 +60,7 @@ func (ec *etherClient) withBackoff(
 		if ec.metricsHandler != nil {
 			rpcUrl := wrapper.url
 			u, err := url.Parse(rpcUrl)
-			if err != nil {
+			if err == nil {
 				ec.metricsHandler(u.Host, method)
 			}
 		}
