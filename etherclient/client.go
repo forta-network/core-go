@@ -3,6 +3,7 @@ package etherclient
 import (
 	"context"
 	"errors"
+	"fmt"
 	"math/big"
 	"time"
 
@@ -513,13 +514,18 @@ func (ec *etherClient) SendTransaction(ctx context.Context, tx *types.Transactio
 }
 
 // CurrentRPCURL returns the RPC URL of the current provider.
-func (ec *etherClient) CurrentRPCURL() string {
+func (ec *etherClient) CurrentRPCURL() (string, error) {
 	// Get the current client's index in the ring
 	currentClient := ec.provider.Provide()
-	for i, client := range ec.provider.(*provider.RingProvider[*ethclient.Client]).Elements() {
+	p, ok := ec.provider.(*provider.RingProvider[*ethclient.Client])
+	if !ok {
+		return "", fmt.Errorf("bad provider type")
+	}
+
+	for i, client := range p.Elements() {
 		if client == currentClient {
-			return ec.urls[i]
+			return ec.urls[i], nil
 		}
 	}
-	return ""
+	return "", fmt.Errorf("no active clients")
 }
