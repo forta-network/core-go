@@ -83,6 +83,7 @@ type Extras interface {
 type etherClient struct {
 	provider      provider.Provider[*ethclient.Client]
 	retryInterval time.Duration
+	urls          []string
 }
 
 var _ EtherClient = &etherClient{}
@@ -102,6 +103,7 @@ func DialContext(ctx context.Context, rawurls ...string) (*etherClient, error) {
 	return &etherClient{
 		provider:      provider.NewRingProvider(clients...),
 		retryInterval: defaultRetryInterval,
+		urls:          rawurls,
 	}, nil
 }
 
@@ -508,4 +510,16 @@ func (ec *etherClient) SendTransaction(ctx context.Context, tx *types.Transactio
 	return ec.withBackoff(ctx, "SendTransaction()", func(ctx context.Context, ethClient *ethclient.Client) error {
 		return ethClient.SendTransaction(ctx, tx)
 	})
+}
+
+// CurrentRPCURL returns the RPC URL of the current provider.
+func (ec *etherClient) CurrentRPCURL() string {
+	// Get the current client's index in the ring
+	currentClient := ec.provider.Provide()
+	for i, client := range ec.provider.(*provider.RingProvider[*ethclient.Client]).Elements() {
+		if client == currentClient {
+			return ec.urls[i]
+		}
+	}
+	return ""
 }
