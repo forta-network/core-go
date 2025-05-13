@@ -1193,7 +1193,7 @@ func (mr *MockEtherClientMockRecorder) SendTransaction(ctx, tx interface{}) *gom
 }
 
 // SetMetricsHandler mocks base method.
-func (m *MockEtherClient) SetMetricsHandler(h func(string, string)) {
+func (m *MockEtherClient) SetMetricsHandler(h func(string, string, error)) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "SetMetricsHandler", h)
 }
