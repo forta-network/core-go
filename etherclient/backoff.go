@@ -53,7 +53,7 @@ func (ec *etherClient) withBackoff(
 		wrapper := ec.provider.Provide()
 		ethClient := wrapper.Client
 		tCtx, cancel := context.WithTimeout(ctx, backoffContextTimeout)
-		err := operation(tCtx, ethClient)
+		opErr := operation(tCtx, ethClient)
 		cancel()
 
 		// If metrics handler is set, call with the RPC URL and the client method that was used.
@@ -61,15 +61,15 @@ func (ec *etherClient) withBackoff(
 			rpcUrl := wrapper.url
 			u, parseErr := url.Parse(rpcUrl)
 			if parseErr == nil {
-				ec.metricsHandler(u.Host, method, err)
+				ec.metricsHandler(u.Host, method, opErr)
 			}
 		}
 
-		if err != nil {
+		if opErr != nil {
 			// Move onto the next provider.
 			ec.provider.Next()
 		}
-		return handleRetryErr(ctx, method, err)
+		return handleRetryErr(ctx, method, opErr)
 	}, bo)
 	if err != nil {
 		logrus.WithError(err).WithField("method", method).Error("retry failed with error")
