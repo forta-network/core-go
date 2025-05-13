@@ -2,6 +2,7 @@ package etherclient
 
 import (
 	"context"
+	"net/url"
 	"time"
 
 	"github.com/cenkalti/backoff"
@@ -48,9 +49,22 @@ func (ec *etherClient) withBackoff(
 		if ctx.Err() != nil {
 			return backoff.Permanent(ctx.Err())
 		}
+
+		wrapper := ec.provider.Provide()
+		ethClient := wrapper.Client
 		tCtx, cancel := context.WithTimeout(ctx, backoffContextTimeout)
-		err := operation(tCtx, ec.provider.Provide())
+		err := operation(tCtx, ethClient)
 		cancel()
+
+		// If metrics handler is set, call with the RPC URL and the client method that was used.
+		if ec.metricsHandler != nil {
+			rpcUrl := wrapper.url
+			u, err := url.Parse(rpcUrl)
+			if err == nil {
+				ec.metricsHandler(u.Host, method)
+			}
+		}
+
 		if err != nil {
 			// Move onto the next provider.
 			ec.provider.Next()
