@@ -57,7 +57,7 @@ type EtherClient interface {
 	Extras
 
 	SetRetryInterval(d time.Duration)
-	SetMetricsHandler(h func(rpcHost, clientMethod string))
+	SetMetricsHandler(h func(rpcHost, clientMethod string, err error))
 }
 
 type Extras interface {
@@ -85,7 +85,7 @@ type etherClient struct {
 	provider      provider.Provider[*ethClientWrapper]
 	retryInterval time.Duration
 
-	metricsHandler func(rpcHost, clientMethod string)
+	metricsHandler func(rpcHost, clientMethod string, err error)
 }
 
 var _ EtherClient = &etherClient{}
@@ -121,7 +121,7 @@ func (ec *etherClient) SetRetryInterval(d time.Duration) {
 	ec.retryInterval = d
 }
 
-func (ec *etherClient) SetMetricsHandler(h func(rpcHost, clientMethod string)) {
+func (ec *etherClient) SetMetricsHandler(h func(rpcHost, clientMethod string, err error)) {
 	ec.metricsHandler = h
 }
 

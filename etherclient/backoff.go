@@ -59,9 +59,9 @@ func (ec *etherClient) withBackoff(
 		// If metrics handler is set, call with the RPC URL and the client method that was used.
 		if ec.metricsHandler != nil {
 			rpcUrl := wrapper.url
-			u, err := url.Parse(rpcUrl)
-			if err == nil {
-				ec.metricsHandler(u.Host, method)
+			u, parseErr := url.Parse(rpcUrl)
+			if parseErr == nil {
+				ec.metricsHandler(u.Host, method, err)
 			}
 		}
 
