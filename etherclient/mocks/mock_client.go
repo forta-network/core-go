@@ -1192,6 +1192,18 @@ func (mr *MockEtherClientMockRecorder) SendTransaction(ctx, tx interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendTransaction", reflect.TypeOf((*MockEtherClient)(nil).SendTransaction), ctx, tx)
 }
 
+// SetMetricsHandler mocks base method.
+func (m *MockEtherClient) SetMetricsHandler(h func(string, string)) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetMetricsHandler", h)
+}
+
+// SetMetricsHandler indicates an expected call of SetMetricsHandler.
+func (mr *MockEtherClientMockRecorder) SetMetricsHandler(h interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetMetricsHandler", reflect.TypeOf((*MockEtherClient)(nil).SetMetricsHandler), h)
+}
+
 // SetRetryInterval mocks base method.
 func (m *MockEtherClient) SetRetryInterval(d time.Duration) {
 	m.ctrl.T.Helper()

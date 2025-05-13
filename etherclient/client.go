@@ -57,6 +57,7 @@ type EtherClient interface {
 	Extras
 
 	SetRetryInterval(d time.Duration)
+	SetMetricsHandler(h func(rpcHost, clientMethod string))
 }
 
 type Extras interface {
