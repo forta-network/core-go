@@ -13,6 +13,9 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/rpc"
+
+	gethtypes "github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/crypto/kzg4844"
 )
 
 // TraceCallTransaction contains the fields of the to-be-simulated transaction.
@@ -23,6 +26,22 @@ type TraceCallTransaction struct {
 	GasPrice *hexutil.Big `json:"gasPrice,omitempty"`
 	Value    *hexutil.Big `json:"value,omitempty"`
 	Data     string       `json:"data"`
+
+	// Introduced by AccessListTxType transaction.
+	AccessList *gethtypes.AccessList `json:"accessList,omitempty"`
+	ChainID    *hexutil.Big          `json:"chainId,omitempty"`
+
+	// For BlobTxType
+	BlobFeeCap *hexutil.Big  `json:"maxFeePerBlobGas"`
+	BlobHashes []common.Hash `json:"blobVersionedHashes,omitempty"`
+
+	// For BlobTxType transactions with blob sidecar
+	Blobs       []kzg4844.Blob       `json:"blobs"`
+	Commitments []kzg4844.Commitment `json:"commitments"`
+	Proofs      []kzg4844.Proof      `json:"proofs"`
+
+	// For SetCodeTxType
+	AuthorizationList []gethtypes.SetCodeAuthorization `json:"authorizationList"`
 }
 
 // TraceCallConfig contains the tracer configuration to be used while simulating the transaction.
