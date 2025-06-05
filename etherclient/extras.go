@@ -21,12 +21,12 @@ import (
 // TraceCallTransaction contains the fields of the to-be-simulated transaction.
 type TraceCallTransaction struct {
 	From                 *common.Address `json:"from"`
-	To                   *common.Address `json:"to"`
-	Gas                  *hexutil.Uint64 `json:"gas"`
-	GasPrice             *hexutil.Big    `json:"gasPrice"`
-	MaxFeePerGas         *hexutil.Big    `json:"maxFeePerGas"`
-	MaxPriorityFeePerGas *hexutil.Big    `json:"maxPriorityFeePerGas"`
-	Value                *hexutil.Big    `json:"value"`
+	To                   *common.Address `json:"to,omitempty"`
+	Gas                  *hexutil.Uint64 `json:"gas,omitempty"`
+	GasPrice             *hexutil.Big    `json:"gasPrice,omitempty"`
+	MaxFeePerGas         *hexutil.Big    `json:"maxFeePerGas,omitempty"`
+	MaxPriorityFeePerGas *hexutil.Big    `json:"maxPriorityFeePerGas,omitempty"`
+	Value                *hexutil.Big    `json:"value,omitempty"`
 	Nonce                *hexutil.Uint64 `json:"nonce"`
 
 	// We accept "data" and "input" for backwards-compatibility reasons.
