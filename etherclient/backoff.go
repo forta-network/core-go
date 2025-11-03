@@ -69,10 +69,14 @@ func (ec *etherClient) withBackoff(
 			// Move onto the next provider.
 			ec.provider.Next()
 		}
-		return handleRetryErr(ctx, method, opErr)
+		return handleRetryErr(ctx, method, ec.chainID, opErr)
 	}, bo)
 	if err != nil {
-		logrus.WithError(err).WithField("method", method).Error("retry failed with error")
+		logger := logrus.WithError(err).WithField("method", method)
+		if ec.chainID != nil {
+			logger = logger.WithField("chainID", ec.chainID.String())
+		}
+		logger.Error("retry failed with error")
 	}
 	return err
 }

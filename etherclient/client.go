@@ -86,6 +86,8 @@ type etherClient struct {
 	retryInterval time.Duration
 
 	metricsHandler func(rpcHost, clientMethod string, err error)
+
+	chainID *big.Int
 }
 
 var _ EtherClient = &etherClient{}
@@ -111,10 +113,17 @@ func DialContext(ctx context.Context, rawurls ...string) (*etherClient, error) {
 		}
 		clients = append(clients, &ethClientWrapper{url: rawurl, Client: c})
 	}
-	return &etherClient{
+	ec := &etherClient{
 		provider:      provider.NewRingProvider(clients...),
 		retryInterval: defaultRetryInterval,
-	}, nil
+	}
+
+	chainID, err := ec.ChainID(ctx)
+	if err == nil {
+		ec.chainID = chainID
+	}
+
+	return ec, nil
 }
 
 func (ec *etherClient) SetRetryInterval(d time.Duration) {
