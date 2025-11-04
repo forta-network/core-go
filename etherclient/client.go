@@ -104,7 +104,8 @@ func (ecw *ethClientWrapper) GetURL() string {
 
 // NewRetrierClient dials all given URLs and creates a client that works with multiple clients
 // and a backoff logic.
-func DialContext(ctx context.Context, rawurls ...string) (*etherClient, error) {
+// If chainID is provided, it will be used directly. Otherwise, it will be fetched from the RPC.
+func DialContext(ctx context.Context, chainID *big.Int, rawurls ...string) (*etherClient, error) {
 	var clients []*ethClientWrapper
 	for _, rawurl := range rawurls {
 		c, err := ethclient.DialContext(ctx, rawurl)
@@ -116,11 +117,15 @@ func DialContext(ctx context.Context, rawurls ...string) (*etherClient, error) {
 	ec := &etherClient{
 		provider:      provider.NewRingProvider(clients...),
 		retryInterval: defaultRetryInterval,
+		chainID:       chainID,
 	}
 
-	chainID, err := ec.ChainID(ctx)
-	if err == nil {
-		ec.chainID = chainID
+	// If chainID was not provided, fetch it from the RPC
+	if ec.chainID == nil {
+		fetchedChainID, err := ec.ChainID(ctx)
+		if err == nil {
+			ec.chainID = fetchedChainID
+		}
 	}
 
 	return ec, nil
