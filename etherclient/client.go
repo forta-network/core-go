@@ -58,6 +58,7 @@ type EtherClient interface {
 
 	SetRetryInterval(d time.Duration)
 	SetMetricsHandler(h func(rpcHost, clientMethod string, err error))
+	SetChainID(chainID *big.Int)
 }
 
 type Extras interface {
@@ -104,8 +105,7 @@ func (ecw *ethClientWrapper) GetURL() string {
 
 // NewRetrierClient dials all given URLs and creates a client that works with multiple clients
 // and a backoff logic.
-// If chainID is provided, it will be used directly. Otherwise, it will be fetched from the RPC.
-func DialContext(ctx context.Context, chainID *big.Int, rawurls ...string) (*etherClient, error) {
+func DialContext(ctx context.Context, rawurls ...string) (*etherClient, error) {
 	var clients []*ethClientWrapper
 	for _, rawurl := range rawurls {
 		c, err := ethclient.DialContext(ctx, rawurl)
@@ -117,15 +117,12 @@ func DialContext(ctx context.Context, chainID *big.Int, rawurls ...string) (*eth
 	ec := &etherClient{
 		provider:      provider.NewRingProvider(clients...),
 		retryInterval: defaultRetryInterval,
-		chainID:       chainID,
 	}
 
-	// If chainID was not provided, fetch it from the RPC
-	if ec.chainID == nil {
-		fetchedChainID, err := ec.ChainID(ctx)
-		if err == nil {
-			ec.chainID = fetchedChainID
-		}
+	// Try to fetch chainID from the RPC
+	chainID, err := ec.ChainID(ctx)
+	if err == nil {
+		ec.chainID = chainID
 	}
 
 	return ec, nil
@@ -137,6 +134,10 @@ func (ec *etherClient) SetRetryInterval(d time.Duration) {
 
 func (ec *etherClient) SetMetricsHandler(h func(rpcHost, clientMethod string, err error)) {
 	ec.metricsHandler = h
+}
+
+func (ec *etherClient) SetChainID(chainID *big.Int) {
+	ec.chainID = chainID
 }
 
 func (ec *etherClient) Client() *rpc.Client {
