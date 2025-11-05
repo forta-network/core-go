@@ -119,11 +119,16 @@ func DialContext(ctx context.Context, rawurls ...string) (*etherClient, error) {
 		retryInterval: defaultRetryInterval,
 	}
 
-	// Try to fetch chainID from the RPC
-	chainID, err := ec.ChainID(ctx)
+	// Try to fetch chainID from the RPC with a short timeout
+	// to avoid blocking DialContext for too long
+	ctxWithTimeout, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	chainID, err := ec.ChainID(ctxWithTimeout)
 	if err == nil {
 		ec.chainID = chainID
 	}
+	// If ChainID fails here, it can be set later via SetChainID
 
 	return ec, nil
 }
