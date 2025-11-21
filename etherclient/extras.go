@@ -157,13 +157,14 @@ func toBlockNumArg(number *big.Int) string {
 }
 
 type BlockTx struct {
-	From  string          `json:"from"`
-	To    string          `json:"to"`
-	Nonce *hexutil.Uint64 `json:"nonce"`
-	Value *hexutil.Big    `json:"value"`
-	Input string          `json:"input"`
-	Hash  string          `json:"hash"`
-	Type  TxType          `json:"type"`
+	From              string                           `json:"from"`
+	To                string                           `json:"to"`
+	Nonce             *hexutil.Uint64                  `json:"nonce"`
+	Value             *hexutil.Big                     `json:"value"`
+	Input             string                           `json:"input"`
+	Hash              string                           `json:"hash"`
+	Type              TxType                           `json:"type"`
+	AuthorizationList []gethtypes.SetCodeAuthorization `json:"authorizationList"`
 }
 
 // GetBlockTransactions returns the raw transactions in a block.
