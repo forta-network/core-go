@@ -2,6 +2,7 @@ package etherclient
 
 import (
 	"context"
+	"math/big"
 	"strings"
 
 	"github.com/cenkalti/backoff"
@@ -32,13 +33,16 @@ func isPermanentError(err error) bool {
 	return false
 }
 
-func handleRetryErr(ctx context.Context, method string, err error) error {
+func handleRetryErr(ctx context.Context, method string, chainID *big.Int, err error) error {
 	if err == nil {
 		return nil
 	}
 	logger := logrus.NewEntry(logrus.StandardLogger())
 	if len(method) > 0 {
 		logger = logger.WithField("method", method)
+	}
+	if chainID != nil {
+		logger = logger.WithField("chainID", chainID.String())
 	}
 	if isPermanentError(err) {
 		logger.WithError(err).Error("backoff permanent error")

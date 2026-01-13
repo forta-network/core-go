@@ -1192,6 +1192,18 @@ func (mr *MockEtherClientMockRecorder) SendTransaction(ctx, tx interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendTransaction", reflect.TypeOf((*MockEtherClient)(nil).SendTransaction), ctx, tx)
 }
 
+// SetChainID mocks base method.
+func (m *MockEtherClient) SetChainID(chainID *big.Int) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetChainID", chainID)
+}
+
+// SetChainID indicates an expected call of SetChainID.
+func (mr *MockEtherClientMockRecorder) SetChainID(chainID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetChainID", reflect.TypeOf((*MockEtherClient)(nil).SetChainID), chainID)
+}
+
 // SetMetricsHandler mocks base method.
 func (m *MockEtherClient) SetMetricsHandler(h func(string, string, error)) {
 	m.ctrl.T.Helper()
