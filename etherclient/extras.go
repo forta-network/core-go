@@ -16,6 +16,7 @@ import (
 
 	gethtypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto/kzg4844"
+	"github.com/holiman/uint256"
 )
 
 // TraceCallTransaction contains the fields of the to-be-simulated transaction.
@@ -167,11 +168,80 @@ type BlockTx struct {
 	AuthorizationList []gethtypes.SetCodeAuthorization `json:"authorizationList"`
 }
 
+// blockTxJSON is the wire form of BlockTx. Its authorization list shadows the
+// one of BlockTx, so that the authorizations are decoded by authorizationJSON.
+type blockTxJSON struct {
+	BlockTx
+	AuthorizationList []authorizationJSON `json:"authorizationList"`
+}
+
+// authorizationJSON decodes an EIP-7702 authorization and accepts any yParity.
+//
+// A block can contain an authorization whose yParity is neither 0 nor 1: the
+// authorization is skipped and the transaction is still valid. go-ethereum 1.17.9
+// and later reject such an authorization in JSON, which would fail the decoding
+// of the whole block. This is the decoder go-ethereum generated up to 1.17.8, so
+// the result is the same whichever go-ethereum version the build selects.
+type authorizationJSON gethtypes.SetCodeAuthorization
+
+func (a *authorizationJSON) UnmarshalJSON(input []byte) error {
+	var dec struct {
+		ChainID *hexutil.U256   `json:"chainId"`
+		Address *common.Address `json:"address"`
+		Nonce   *hexutil.Uint64 `json:"nonce"`
+		V       *hexutil.Uint64 `json:"yParity"`
+		R       *hexutil.U256   `json:"r"`
+		S       *hexutil.U256   `json:"s"`
+	}
+	if err := json.Unmarshal(input, &dec); err != nil {
+		return err
+	}
+	if dec.ChainID == nil {
+		return errors.New("missing required field 'chainId' for SetCodeAuthorization")
+	}
+	a.ChainID = uint256.Int(*dec.ChainID)
+	if dec.Address == nil {
+		return errors.New("missing required field 'address' for SetCodeAuthorization")
+	}
+	a.Address = *dec.Address
+	if dec.Nonce == nil {
+		return errors.New("missing required field 'nonce' for SetCodeAuthorization")
+	}
+	a.Nonce = uint64(*dec.Nonce)
+	if dec.V == nil {
+		return errors.New("missing required field 'yParity' for SetCodeAuthorization")
+	}
+	a.V = uint8(*dec.V)
+	if dec.R == nil {
+		return errors.New("missing required field 'r' for SetCodeAuthorization")
+	}
+	a.R = uint256.Int(*dec.R)
+	if dec.S == nil {
+		return errors.New("missing required field 's' for SetCodeAuthorization")
+	}
+	a.S = uint256.Int(*dec.S)
+	return nil
+}
+
+// toBlockTx returns the transaction with its decoded authorization list.
+func (tx *blockTxJSON) toBlockTx() *BlockTx {
+	if tx == nil {
+		return nil
+	}
+	if tx.AuthorizationList != nil {
+		tx.BlockTx.AuthorizationList = make([]gethtypes.SetCodeAuthorization, len(tx.AuthorizationList))
+		for i, auth := range tx.AuthorizationList {
+			tx.BlockTx.AuthorizationList[i] = gethtypes.SetCodeAuthorization(auth)
+		}
+	}
+	return &tx.BlockTx
+}
+
 // GetBlockTransactions returns the raw transactions in a block.
 func (ec *etherClient) GetBlockTransactions(ctx context.Context, number *big.Int) ([]*BlockTx, error) {
 	var block struct {
-		Hash         string     `json:"hash"`
-		Transactions []*BlockTx `json:"transactions"`
+		Hash         string         `json:"hash"`
+		Transactions []*blockTxJSON `json:"transactions"`
 	}
 	err := ec.withBackoff(ctx, "GetBlockTransactions()", func(ctx context.Context, ethClient *ethclient.Client) error {
 		err := ethClient.Client().CallContext(
@@ -193,6 +263,13 @@ func (ec *etherClient) GetBlockTransactions(ctx context.Context, number *big.Int
 	if err != nil {
 		return nil, err
 	}
+	if block.Transactions == nil {
+		return nil, nil
+	}
 
-	return block.Transactions, nil
+	txs := make([]*BlockTx, len(block.Transactions))
+	for i, tx := range block.Transactions {
+		txs[i] = tx.toBlockTx()
+	}
+	return txs, nil
 }

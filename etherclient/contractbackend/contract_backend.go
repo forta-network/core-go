@@ -3,7 +3,7 @@ package contractbackend
 import (
 	"context"
 
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind/v2"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -16,6 +16,9 @@ const (
 )
 
 // ContractBackend is the same interface.
+//
+// It embeds the interface from bind/v2, where it is declared. bind.ContractBackend
+// is a type alias of it, and mockgen cannot resolve an embedded alias in source mode.
 type ContractBackend interface {
 	bind.ContractBackend
 }

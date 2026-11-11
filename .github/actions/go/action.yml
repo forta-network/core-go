@@ -10,7 +10,7 @@ runs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.22
+        go-version: 1.26
     - uses: actions/cache/restore@v4
       with:
         path: |
@@ -24,12 +24,10 @@ runs:
       run: |
         go vet $(go list -f '{{ .Dir }}' ./...)
     - name: Lint
-      uses: golangci/golangci-lint-action@v2
-      with:
-        skip-go-installation: true
-        skip-pkg-cache: true
-        skip-build-cache: true
-        version: v1.63.4
+      shell: bash
+      run: |
+        make require-tools
+        ./toolbin/golangci-lint run ./...
     - name: Build
       shell: bash
       run: go build -v ./...
