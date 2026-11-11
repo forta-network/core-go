@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/big"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 	"time"
 
@@ -27,29 +25,6 @@ func testAuthorization(yParity uint8) gethtypes.SetCodeAuthorization {
 		R:       *uint256.NewInt(10),
 		S:       *uint256.NewInt(11),
 	}
-}
-
-// newTestClient returns a client of a JSON-RPC server which answers every request
-// with the given result.
-func newTestClient(t *testing.T, result string) *etherClient {
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		var req struct {
-			ID json.RawMessage `json:"id"`
-		}
-		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintf(w, `{"jsonrpc":"2.0","id":%s,"result":%s}`, req.ID, result)
-	}))
-	t.Cleanup(srv.Close)
-
-	client, err := DialContext(context.Background(), srv.URL)
-	require.NoError(t, err)
-	t.Cleanup(client.Close)
-	client.SetRetryInterval(10 * time.Millisecond)
-	return client
 }
 
 func TestGetBlockTransactions_AuthorizationYParity(t *testing.T) {
