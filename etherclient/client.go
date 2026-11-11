@@ -283,6 +283,15 @@ func (ec *etherClient) TransactionReceipt(ctx context.Context, txHash common.Has
 	return
 }
 
+func (ec *etherClient) SubscribeTransactionReceipts(ctx context.Context, q *ethereum.TransactionReceiptsQuery, ch chan<- []*types.Receipt) (ret1 ethereum.Subscription, err error) {
+	err = ec.withBackoff(ctx, "SubscribeTransactionReceipts", func(ctx context.Context, ethClient *ethclient.Client) error {
+		r1, e := ethClient.SubscribeTransactionReceipts(ctx, q, ch)
+		ret1 = r1
+		return e
+	})
+	return
+}
+
 func (ec *etherClient) SyncProgress(ctx context.Context) (ret1 *ethereum.SyncProgress, err error) {
 	err = ec.withBackoff(ctx, "SyncProgress", func(ctx context.Context, ethClient *ethclient.Client) error {
 		r1, e := ethClient.SyncProgress(ctx)

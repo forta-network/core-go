@@ -531,6 +531,21 @@ func (mr *MockEthClientMockRecorder) SubscribeNewHead(ctx, ch interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubscribeNewHead", reflect.TypeOf((*MockEthClient)(nil).SubscribeNewHead), ctx, ch)
 }
 
+// SubscribeTransactionReceipts mocks base method.
+func (m *MockEthClient) SubscribeTransactionReceipts(ctx context.Context, q *ethereum.TransactionReceiptsQuery, ch chan<- []*types.Receipt) (ethereum.Subscription, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SubscribeTransactionReceipts", ctx, q, ch)
+	ret0, _ := ret[0].(ethereum.Subscription)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SubscribeTransactionReceipts indicates an expected call of SubscribeTransactionReceipts.
+func (mr *MockEthClientMockRecorder) SubscribeTransactionReceipts(ctx, q, ch interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubscribeTransactionReceipts", reflect.TypeOf((*MockEthClient)(nil).SubscribeTransactionReceipts), ctx, q, ch)
+}
+
 // SuggestGasPrice mocks base method.
 func (m *MockEthClient) SuggestGasPrice(ctx context.Context) (*big.Int, error) {
 	m.ctrl.T.Helper()
@@ -1274,6 +1289,21 @@ func (m *MockEtherClient) SubscribeNewHead(ctx context.Context, ch chan<- *types
 func (mr *MockEtherClientMockRecorder) SubscribeNewHead(ctx, ch interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubscribeNewHead", reflect.TypeOf((*MockEtherClient)(nil).SubscribeNewHead), ctx, ch)
+}
+
+// SubscribeTransactionReceipts mocks base method.
+func (m *MockEtherClient) SubscribeTransactionReceipts(ctx context.Context, q *ethereum.TransactionReceiptsQuery, ch chan<- []*types.Receipt) (ethereum.Subscription, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SubscribeTransactionReceipts", ctx, q, ch)
+	ret0, _ := ret[0].(ethereum.Subscription)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SubscribeTransactionReceipts indicates an expected call of SubscribeTransactionReceipts.
+func (mr *MockEtherClientMockRecorder) SubscribeTransactionReceipts(ctx, q, ch interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubscribeTransactionReceipts", reflect.TypeOf((*MockEtherClient)(nil).SubscribeTransactionReceipts), ctx, q, ch)
 }
 
 // SuggestGasPrice mocks base method.
